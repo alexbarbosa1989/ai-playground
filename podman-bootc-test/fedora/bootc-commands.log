@@ -1,0 +1,84 @@
+# bootc commands
+
+# install podman-bootc https://github.com/containers/podman-bootc?tab=readme-ov-file#fedora
+sudo dnf -y install 'dnf-command(copr)'
+sudo dnf -y copr enable gmaglione/podman-bootc
+sudo dnf -y install podman-bootc
+
+# create the image
+podman build -t quay.io/abarbosa/fedora-bootc-test:1.0 .
+
+# Check created images
+podman images
+REPOSITORY                          TAG         IMAGE ID      CREATED         SIZE
+quay.io/abarbosa/fedora-bootc-test  1.0         e624c07e7009  10 seconds ago  1.63 GB
+quay.io/fedora/fedora-bootc         40          bad1c60ddc51  4 days ago      1.63 GB
+
+# Initialize a new machine with root being the default user
+podman machine init --rootful --now
+
+#############################
+# if virtiofsd error
+Starting machine "podman-machine-default"
+ERRO[0029] process 8279 has not ended                   
+Error: failed to find virtiofsd: exec: "virtiofsd": executable file not found in $PATH
+
+# verify where is installed virtiofsd
+whereis virtiofsd
+virtiofsd: /usr/libexec/virtiofsd
+
+# then add it to the path
+export PATH=$PATH:/usr/libexec/virtiofsd
+
+#reset the machine 
+podman machine reset
+
+# as root, create a symlink to podman libexec installation
+sudo su - 
+ln -s /usr/libexec/virtiofsd /usr/libexec/podman/virtiofsd
+exit
+
+# init a new podman machine
+podman machine init --rootful --now
+#############################
+
+# push the image to the custom personal repository (if doesn't exists yet)
+podman push quay.io/abarbosa/fedora-bootc-test:1.0
+
+# run the initially created container using podman-bootc
+podman-bootc run --filesystem=xfs quay.io/abarbosa/fedora-bootc-test:1.0
+
+###playing with bootc####
+#apply a change in the Containerfile and re-build the image
+echo "Hello bootc test change" > hello
+podman build -t quay.io/abarbosa/fedora-bootc-test:1.0 .
+podman push quay.io/abarbosa/fedora-bootc-test:1.0
+
+####################
+## (into the running bootc machine) apply the changes
+bootc update
+---
+layers already present: 65; layers needed: 2 (430 bytes)
+Fetched layers: 430 B in 7 seconds (58 B/s)
+Queued for next boot: quay.io/abarbosa/fedora-bootc-test:1.0
+  Version: 40.20241023.0
+  Digest: sha256:ad723fc616ad60cbdcdae62b2a7beba8aeeffcc1733ac732417c228edd7aaec4
+Total new layers: 67    Size: 790.8 MB
+Removed layers:   2     Size: 427 bytes
+Added layers:     2     Size: 430 bytes
+---
+reboot
+
+## now the session is closed
+####################
+
+# check the bootc image status
+podman-bootc list
+ID            REPO                                    SIZE        CREATED         RUNNING     SSH PORT
+e624c07e7009  quay.io/abarbosa/fedora-bootc-test:1.0  10.7GB      14 minutes ago  true        34387
+
+# ssh into the running bootc instance
+podman-bootc ssh e624c07e7009
+# test the changes
+cat /usr/bin/hello 
+Hello bootc test change
