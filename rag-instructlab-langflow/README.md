@@ -90,10 +90,10 @@ Therefore, here is where RAG can be used for this purpose.
 Access the LangFlow builder URL `http://127.0.0.1:7860` in a browser and import the `BasicRAG-URL.json` file which contains the built flow for the RAG test. 
 There are two main flows:
 1. For Vector Database population:
-   ![Screenshot From 2024-11-26 11-57-05](https://github.com/user-attachments/assets/a3aae1ec-aca6-4c9f-9a92-d769432f1a75)
+   ![Screenshot From 2024-11-26 11-57-05](https://github.com/user-attachments/assets/ac04f49e-6a03-4d84-9824-2fb34d93afe5)
 
 2. For Model interaction:
-   ![Screenshot From 2024-11-26 11-59-26](https://github.com/user-attachments/assets/783bbe31-f16e-42eb-950d-dd1e8ef379f1)
+   ![Screenshot From 2024-11-26 11-59-26](https://github.com/user-attachments/assets/52a211b4-3c59-472c-8aec-d6ee150202f3)
 
 ### Populate the vector database
 This is the first step that should be executed. This is the workflow:
@@ -117,7 +117,7 @@ chroma-db
 ~~~
 
 Also can be visualized in the Chroma Component output in Langflow:
-![Screenshot From 2024-11-26 14-42-09](https://github.com/user-attachments/assets/3f68420d-3ecc-43dc-9112-a255db201413)
+![Screenshot From 2024-11-26 14-42-09](https://github.com/user-attachments/assets/fa912c2c-a8b0-4611-a1fe-1da2dab8782f)
 
 
 ### Interact with the served model in Instruclab
@@ -139,8 +139,9 @@ or:
 You are a tourist guide and will answer the questions to promote activities in the city
 ~~~
 - These are the agent configuration details: 
-- ![Screenshot From 2024-11-26 14-55-13](https://github.com/user-attachments/assets/ca033bae-d702-48e8-9893-3c3c233a0e59)
+- ![Screenshot From 2024-11-26 14-55-13](https://github.com/user-attachments/assets/f22ba058-e010-4ee8-8a82-f2239bf13517)
 - Now we can set a chat output connected to the agent response and check the results:
-![Screenshot From 2024-11-26 13-06-49](https://github.com/user-attachments/assets/8be11bc6-48fe-47d8-b99b-6dbbbbcef60f)
+![Screenshot From 2024-11-26 13-06-49](https://github.com/user-attachments/assets/8126615e-b120-4355-92b2-56cbb9282d3d)
+
 
 Now We're getting more accurate information, based on the updated information from the internet data that We set into the vector store
