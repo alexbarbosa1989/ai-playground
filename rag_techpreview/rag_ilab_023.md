@@ -46,3 +46,14 @@ tree .
 └── rag_docs_out
     └── OCP_AI_getting_started.json
 ~~~
+
+- Ingest the data from the previously generated converted file into a vector db. The ingest process needs as input the entire dir path:
+~~~
+ilab rag ingest --input-dir ~/rag_tests/rag_docs_out/
+~~~
+It will create the `embeddings.db` file in `~/.local/share/instructlab/`:
+~~~
+ll ~/.local/share/instructlab/embeddings.db 
+-rw-r--r--. 1 abarbosa abarbosa 1472527 Feb  4 10:10 /home/abarbosa/.local/share/instructlab/embeddings.db
+~~~
+It is possible to explre more options using the command `ilab rag ingest --help`:
