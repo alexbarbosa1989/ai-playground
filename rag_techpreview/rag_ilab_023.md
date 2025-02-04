@@ -6,7 +6,9 @@ Current test was made using current latest Instructlab version 0.23.1
 
 Test scenario description:
 
-Testing RAG using a PDF document from Red Hat portal. In this case was used the [Getting Started Document for Openshift AI Self-Managed](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/pdf/getting_started_with_red_hat_openshift_ai_self-managed/Red_Hat_OpenShift_AI_Self-Managed-2.16-Getting_started_with_Red_Hat_OpenShift_AI_Self-Managed-en-US.pdf). Then, was convert to json format to make it able to be ingested in a vector database and use the `--rag` pipeline when chat with the model. All these steps are detailed in the [Instruct lab README RAG section](https://github.com/instructlab/instructlab?tab=readme-ov-file#-configure-retrieval-augmented-generation-developer-preview)
+Testing RAG using a PDF document from Red Hat portal. In this case was used the [Getting Started Document for Openshift AI Self-Managed](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/pdf/getting_started_with_red_hat_openshift_ai_self-managed/Red_Hat_OpenShift_AI_Self-Managed-2.16-Getting_started_with_Red_Hat_OpenShift_AI_Self-Managed-en-US.pdf). Then, was convert to json format to make it able to be ingested in a vector database and use the `--rag` pipeline when chat with the model. All these steps are detailed in the [Instruct lab README RAG section](https://github.com/instructlab/instructlab?tab=readme-ov-file#-configure-retrieval-augmented-generation-developer-preview).
+
+Once embedded the document info in a vector db, will be tested the model with and witout the `--rag` option and with promts with different details levels to analyze the generated output in each chat interaction.
 
 
 Procedure:
@@ -56,4 +58,40 @@ It will create the `embeddings.db` file in `~/.local/share/instructlab/`:
 ll ~/.local/share/instructlab/embeddings.db 
 -rw-r--r--. 1 abarbosa abarbosa 1472527 Feb  4 10:10 /home/abarbosa/.local/share/instructlab/embeddings.db
 ~~~
-It is possible to explre more options using the command `ilab rag ingest --help`:
+It is possible to explore more options using the command `ilab rag ingest --help`
+
+- In another terminal, serve the model:
+~~~
+ilab model serve --model-path ~/.cache/instructlab/models/granite-7b-lab-Q4_K_M.gguf
+~~~
+
+- Back to the previous working terminal, start a chat with the model:
+~~~
+ilab model chat
+~~~
+
+-search for a topic that want to validate into the Openshift AI getting started document. In current test case, it was used the "CHAPTER 3. CREATING A DATA SCIENCE PROJECT".
+
+TO-DO: attach image
+
+- Write a basic prompt asking for a topic that can be validate into the Openshift AI document previously embedded.
+~~~
+give me the steps to configure a Workbench in Openshift AI  
+~~~
+
+Now, use the previous prompt to test chatting with the model with no `--rag` option and using it.
+
+- Chat without `--rag` option:
+~~~
+
+~~~
+
+- That previus promt is too short and is not giving enough context
+~~~
+I know that in order to implement a data science workflow, i must create a project. Please, provide me the steps to create a Data Science Project in Openshift AI
+~~~
+
+
+~~~
+ilab model chat
+~~~
