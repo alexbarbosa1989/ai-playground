@@ -104,4 +104,5 @@ I know that in order to implement a data science workflow, i must create a proje
   - With `--rag` option:
     ![detailed_promt_rag](https://github.com/user-attachments/assets/dc278e89-8b44-442a-9eee-a58dcaf35e05)
 
-
+This test shows that with the more detailed promt, the chat output with no --rag option is completely unaccurate, while the chat with the --rag option provides a more accurated answer, not exactly as is described into the document, but close to an expected answer. 
+It is important to mention that in the performed tests the used model always was the base **granite-7b-lab-Q4_K_M.gguf** without any fine-tuning training process.
