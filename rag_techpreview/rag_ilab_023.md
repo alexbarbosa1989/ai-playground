@@ -15,7 +15,7 @@ Once embedded the document info in a vector db, the model is with and witout the
 
 - Download a PDF document from Red Hat portal. For this example was used [Getting Started Document for Openshift AI Self-Managed](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/pdf/getting_started_with_red_hat_openshift_ai_self-managed/Red_Hat_OpenShift_AI_Self-Managed-2.16-Getting_started_with_Red_Hat_OpenShift_AI_Self-Managed-en-US.pdf)
 
-- Open a terminal and set the ``ILAB_FEATURE_SCOPE` to enable the `--rag` pipeline
+- Open a terminal and set the `ILAB_FEATURE_SCOPE` to enable the `--rag` pipeline
 ~~~
 export ILAB_FEATURE_SCOPE=DevPreviewNoUpgrade
 ~~~
@@ -70,9 +70,8 @@ ilab model serve --model-path ~/.cache/instructlab/models/granite-7b-lab-Q4_K_M.
 ilab model chat
 ~~~
 
--search for a topic that want to validate into the Openshift AI getting started document. In current test case, it was used the "CHAPTER 3. CREATING A DATA SCIENCE PROJECT".
-
-TO-DO: attach image
+- Search for a topic that want to validate into the Openshift AI getting started document. In current test case, it was used the "CHAPTER 3. CREATING A DATA SCIENCE PROJECT" - Procedure section.
+![document_ref](https://github.com/user-attachments/assets/fecc5a7d-8037-4f9e-8620-01803a23f751)
 
 - Write a basic prompt asking for a topic that can be validate into the Openshift AI document previously embedded.
 ~~~
@@ -81,17 +80,28 @@ give me the steps to configure a Workbench in Openshift AI
 
 Now, use the previous prompt to test chatting with the model with no `--rag` option and using it.
 
-- Chat without `--rag` option:
-~~~
+- Chat with the model:
+  - With no `--rag` option:
+    ![basic_promt_norag](https://github.com/user-attachments/assets/d5ac1626-799e-490e-a42c-e91b6f294cda)
 
-~~~
+  - With `--rag` option:
+    ![basic_promt_rag](https://github.com/user-attachments/assets/09ed0bee-c0d8-42d3-a9c7-1b3ba48f2390)
 
-- That previus promt is too short and is not giving enough context
+
+From both cases, the model output is not accurate. That could indicate that the used promt is too short and is not giving enough context
+
+- Testing with a more descriptive promt:
 ~~~
 I know that in order to implement a data science workflow, i must create a project. Please, provide me the steps to create a Data Science Project in Openshift AI
 ~~~
 
+- Chat with the model:
+  - With no `--rag` option:
+    ![detailed_promt_norag_1](https://github.com/user-attachments/assets/663b8aab-d2c4-4482-96b0-eb6e27568c74)
+    ![detailed_promt_norag_2](https://github.com/user-attachments/assets/688855cd-0b73-4b06-9c15-6741b8d7d10c)
 
-~~~
-ilab model chat
-~~~
+
+  - With `--rag` option:
+    ![detailed_promt_rag](https://github.com/user-attachments/assets/dc278e89-8b44-442a-9eee-a58dcaf35e05)
+
+
