@@ -2,11 +2,11 @@
 
 Retrieval-Augmented Generation (RAG) was introduced in [Instructlab 0.23.0](https://github.com/instructlab/instructlab/releases/tag/v0.23.0) as an experimental/preview implementation 
 
-Current test was made using current latest Instructlab version 0.23.1
+The current test was made using Instructlab version 0.23.1
 
 Test scenario description:
 
-Testing RAG using a PDF document from Red Hat portal. In this case was used the [Getting Started Document for Openshift AI Self-Managed](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/pdf/getting_started_with_red_hat_openshift_ai_self-managed/Red_Hat_OpenShift_AI_Self-Managed-2.16-Getting_started_with_Red_Hat_OpenShift_AI_Self-Managed-en-US.pdf). Then, it was convert to json format to make it able to be ingested in a vector database and use the `--rag` pipeline when chat with the model. All these steps are detailed in the [Instruct lab README RAG section](https://github.com/instructlab/instructlab?tab=readme-ov-file#-configure-retrieval-augmented-generation-developer-preview).
+Testing RAG using a PDF document from the Red Hat portal. In this case, was used the [Getting Started Document for Openshift AI Self-Managed](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/pdf/getting_started_with_red_hat_openshift_ai_self-managed/Red_Hat_OpenShift_AI_Self-Managed-2.16-Getting_started_with_Red_Hat_OpenShift_AI_Self-Managed-en-US.pdf). Then, it was convert to json format to make it able to be ingested in a vector database and use the `--rag` pipeline when chat with the model. All these steps are detailed in the [Instruct lab README RAG section](https://github.com/instructlab/instructlab?tab=readme-ov-file#-configure-retrieval-augmented-generation-developer-preview).
 
 Once embedded the document info in a vector db, the model is with and witout the `--rag` option and with promts with different detail levels, in order to analyze the generated output in each chat interaction.
 
