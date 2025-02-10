@@ -19,12 +19,12 @@ Once embedded the document info in a vector db, the model is with and without th
 ~~~
 export ILAB_FEATURE_SCOPE=DevPreviewNoUpgrade
 ~~~
-NOTE: If not set, it will generate the below error message when try to chat with the model using `--rag` pipeline:
+NOTE: If not set, it will generate the below error message when trying to chat with the model using `--rag` pipeline:
 ~~~
 ERROR 2025-02-04 10:12:12,040 instructlab.model.chat:591: This functionality is experimental; set ILAB_FEATURE_SCOPE to "DevPreviewNoUpgrade" to enable.
 ~~~
 
-- Download the `ibm-granite/granite-embedding-125m-english` model from HuggingFace. This is the default embedding model for Instructlab RAG and makes possible to ingest documents into a vector index and retrive the stored data in the chat process:
+- Download the `ibm-granite/granite-embedding-125m-english` model from HuggingFace. This is the default embedding model for Instructlab RAG and makes possible to ingest documents into a vector index and retrieve the stored data in the chat process:
 ~~~
 ilab model download --repository ibm-granite/granite-embedding-125m-english --hf-token <huggingface-token>
 ~~~
@@ -70,10 +70,10 @@ ilab model serve --model-path ~/.cache/instructlab/models/granite-7b-lab-Q4_K_M.
 ilab model chat
 ~~~
 
-- Search for a topic that want to validate into the Openshift AI getting started document. In current test case, it was used the "CHAPTER 3. CREATING A DATA SCIENCE PROJECT" - Procedure section.
+- Search for a topic that want to validate into the Openshift AI getting started document. In the current test case, it was used the "CHAPTER 3. CREATING A DATA SCIENCE PROJECT" - Procedure section.
 ![document_ref](https://github.com/user-attachments/assets/fecc5a7d-8037-4f9e-8620-01803a23f751)
 
-- Write a basic prompt asking for a topic that can be validate into the Openshift AI document previously embedded.
+- Write a basic prompt asking for a topic that can be validated into the Openshift AI document previously embedded.
 ~~~
 give me the steps to configure a Workbench in Openshift AI  
 ~~~
@@ -88,9 +88,9 @@ Now, use the previous prompt to test chatting with the model with no `--rag` opt
     ![basic_promt_rag](https://github.com/user-attachments/assets/09ed0bee-c0d8-42d3-a9c7-1b3ba48f2390)
 
 
-From both cases, the model output is not accurate. That could indicate that the used promt is too short and is not giving enough context
+In both cases, the model output is not accurate. That could indicate that the used prompt is too short and does not giving enough context
 
-- Testing with a more descriptive promt:
+- Testing with a more descriptive prompt:
 ~~~
 I know that in order to implement a data science workflow, i must create a project. Please, provide me the steps to create a Data Science Project in Openshift AI
 ~~~
