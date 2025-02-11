@@ -123,7 +123,7 @@ Also can be visualized in the Chroma Component output in Langflow:
 ### Interact with the served model in Instruclab
 Having populated the vector store, now that data can be used as context for prompts outputs:
 - Set a Chat input with the same question earlier test directly with the model chat `Who is the current mayor of Bucaramanga?
-- Create a Promt setting a template that will contain two variables `context` and `question`:
+- Create a Prompt setting a template that will contain two variables `context` and `question`:
 ~~~
 {context} -- Prompt from a person that looks for information about Bucaramanga City.
 In their {question} could request details from Bucaramanga City most recent available information
