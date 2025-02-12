@@ -6,9 +6,9 @@ The current test was made using Instructlab version 0.23.1
 
 Test scenario description:
 
-Testing RAG using a PDF document from the Red Hat portal. In this case, was used the [Getting Started Document for Openshift AI Self-Managed](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/pdf/getting_started_with_red_hat_openshift_ai_self-managed/Red_Hat_OpenShift_AI_Self-Managed-2.16-Getting_started_with_Red_Hat_OpenShift_AI_Self-Managed-en-US.pdf). Then, it was converted to JSON format to make it able to be ingested in a vector database and use the `--rag` pipeline when chatting with the model. All these steps are detailed in the [Instruct lab README RAG section](https://github.com/instructlab/instructlab?tab=readme-ov-file#-configure-retrieval-augmented-generation-developer-preview).
+Testing RAG using a PDF document from the Red Hat portal. In this case, was used the [Getting Started Document for Openshift AI Self-Managed](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/pdf/getting_started_with_red_hat_openshift_ai_self-managed/Red_Hat_OpenShift_AI_Self-Managed-2.16-Getting_started_with_Red_Hat_OpenShift_AI_Self-Managed-en-US.pdf). Then, it was converted to JSON format to make it able to be ingested in a vector store and use the `--rag` pipeline when chatting with the model. All these steps are detailed in the [Instruct lab README RAG section](https://github.com/instructlab/instructlab?tab=readme-ov-file#-configure-retrieval-augmented-generation-developer-preview).
 
-Once embedded the document info in a vector db, the model is with and without the `--rag` option and with prompts with different detail levels, in order to analyze the generated output in each chat interaction.
+Once embedded the document info in a vector store, the model is with and without the `--rag` option and with prompts with different detail levels, in order to analyze the generated output in each chat interaction.
 
 
 ## Procedure:
@@ -49,7 +49,7 @@ tree .
     └── OCP_AI_getting_started.json
 ~~~
 
-- Ingest the data from the previously generated converted file into a vector db. The ingest process needs as input the entire dir path:
+- Ingest the data from the previously generated converted file into a vector store. The ingest process needs as input the entire dir path:
 ~~~
 ilab rag ingest --input-dir ~/rag_tests/rag_docs_out/
 ~~~
