@@ -12,6 +12,7 @@
 ## pre-requisite libraries
 #pip install SpeechRecognition
 #pip install pyttsx3
+#pip install langchain_huggingface
 #pip install langchain-core
 #pip install langchain_ollama
 #pip install PyAudio
@@ -25,8 +26,10 @@ import os
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_ollama.llms import OllamaLLM
+from langchain_huggingface import HuggingFaceEndpoint
 from pydub import AudioSegment 
+
+
 
 load_dotenv()
 
@@ -44,8 +47,13 @@ Now, Agent, please reply:
 """
 
 prompt = ChatPromptTemplate.from_template(template)
-#model = OllamaLLM(model="llama3.1") 
-model = OllamaLLM(model="deepseek-r1:14b") 
+endpoint_url="http://127.0.0.1:8000/v1"
+model = HuggingFaceEndpoint(
+    endpoint_url=f"{endpoint_url}",
+    task='text-generation',
+    max_new_tokens=500,
+    temperature=0.7,
+)
 chain = prompt | model
 
 messages = []
