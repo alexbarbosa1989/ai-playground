@@ -1,0 +1,129 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1e1e2e;
+    color: #ffffff;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #ffa500;
+}
+
+/* Input Container */
+.input-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* For absolute positioning of buttons */
+    max-width: 600px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+/* Input Field */
+#userInput {
+    flex: 1; /* Make the input field expand */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+    overflow: auto;
+    resize: both;
+}
+
+/* Buttons */
+#recordButton, #sendButton, #speakButton {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+
+/* Button Interaction Styles */
+#sendButton:active, #recordButton:active {
+    transform: scale(0.95);
+}
+
+/* Button Colors on Active State */
+#recordButton.listening {
+    background-color: #d32f2f;
+    box-shadow: 0px 4px 10px rgba(255, 69, 58, 0.5);
+}
+
+/* Status Message */
+#status {
+    font-size: 1.2rem;
+    margin-top: 10px;
+    font-style: italic;
+    color: #ccc;
+}
+
+/* Input Container */
+.input-container {
+    background: #29293d;
+    display: flex;
+    justify-content: center; /* Center-align items horizontally */
+    align-items: center; /* Center-align items vertically */
+    gap: 10px; /* Space between elements */
+    max-width: 600px;
+    width: 90%;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Response Container */
+.response-container {
+    background: #29293d;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+    display: inline-block;
+    text-align: left;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+/* Response Box */
+.response-box {
+    background: #29293d;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+    display: inline-block;
+    text-align: left;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .input-container {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    input[type="text"], button {
+        width: 100%;
+    }
+
+    button {
+        height: 45px;
+    }
+}

@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice Assistant</title>
+    <title>Voice & Text Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
-    <h1>Voice Assistant</h1>
-    <button id="recordButton">🎤 Start Listening</button>
-    <p id="status">Press the button and speak...</p>
-    <p><strong>User:</strong> <span id="userText"></span></p>
-    <p><strong>Agent:</strong> <span id="agentResponse"></span></p>
+    <h1>🎙️ Voice & Text Assistant</h1>
+    <div class="input-container">
+        <input type="text" id="userInput" placeholder="Type a message...">
+        <button id="sendButton">➡️</button>
+        <button id="recordButton">🎤</button>
+    </div>
+    <p id="status"></p>
+    <div class="response-container">
+        <p><strong>User:</strong> <span id="userText">---</span></p>
+        <p><strong>Agent:</strong> <span id="agentResponse">---</span></p>
+        <button id="speakButton">🔊</button>
+    </div>
 
     <script>
         let mediaRecorder;
@@ -23,6 +33,36 @@
                 stopRecording();
             }
         });
+
+        document.getElementById("sendButton").addEventListener("click", sendTextMessage);
+
+        document.getElementById("userInput").addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                sendTextMessage();
+            }
+        });
+
+        async function sendTextMessage() {
+            let userMessage = document.getElementById("userInput").value.trim();
+            if (!userMessage) return;
+
+            document.getElementById("status").innerText = "Processing...";
+            const response = await fetch("/process_text", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userMessage })
+            });
+
+            const data = await response.json();
+            updateChat(userMessage, data.response);
+            document.getElementById("userInput").value = ""; // Clear input after sending
+            document.getElementById("status").innerText = "";
+        }
+
+        function updateChat(userMessage, agentResponse) {
+            document.getElementById("userText").innerText = userMessage;
+            document.getElementById("agentResponse").innerText = agentResponse;
+        }
 
         async function startRecording() {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -39,14 +79,16 @@
             };
 
             mediaRecorder.start();
-            document.getElementById("status").innerText = "🎙️ Listening...";
-            document.getElementById("recordButton").innerText = "⏹️ Stop Listening";
+            document.getElementById("status").innerText = "🎙️";
+            document.getElementById("recordButton").innerText = "⏹️";
+            document.getElementById("recordButton").classList.add("listening");
         }
 
         function stopRecording() {
             mediaRecorder.stop();
             document.getElementById("status").innerText = "Processing...";
-            document.getElementById("recordButton").innerText = "🎤 Start Listening";
+            document.getElementById("recordButton").innerText = "🎤";
+            document.getElementById("recordButton").classList.remove("listening");
         }
 
         async function sendAudio(audioBlob) {
@@ -63,6 +105,33 @@
             document.getElementById("agentResponse").innerText = data.response;
             document.getElementById("status").innerText = "Press the button and speak...";
         }
+
+        document.getElementById("sendButton").addEventListener("click", async function () {
+            let userMessage = document.getElementById("userInput").value;
+            if (!userMessage.trim()) return;
+
+            const response = await fetch("/process_text", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userMessage })
+            });
+
+            const data = await response.json();
+            updateChat(userMessage, data.response);
+        });
+
+        document.getElementById("speakButton").addEventListener("click", function () {
+            let responseText = document.getElementById("agentResponse").innerText;
+            if (responseText && responseText !== "---") {
+                let speech = new SpeechSynthesisUtterance(responseText);
+                speech.lang = "en-US"; // Adjust language if needed
+                speech.rate = 1; // Speed (1 = normal)
+                speech.volume = 1; // Max volume
+                speech.pitch = 1; // Pitch level
+                window.speechSynthesis.speak(speech);
+            }
+        });
     </script>
 </body>
+
 </html>

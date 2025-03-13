@@ -44,21 +44,14 @@ Now, Agent, please reply:
 """
 
 prompt = ChatPromptTemplate.from_template(template)
-model = OllamaLLM(model="llama3.1")
+#model = OllamaLLM(model="llama3.1") 
+model = OllamaLLM(model="deepseek-r1:14b") 
 chain = prompt | model
 
 messages = []
 messages.append({"role": "system", "content": "You are a personal agent assistant."})
 
 app = Flask(__name__)
-
-def SpeakText(text):
-    engine = pyttsx3.init()  # Reinitialize every time
-    engine.setProperty("rate", 180)  # Adjust speed
-    engine.setProperty("volume", 1.0)  # Max volume
-    engine.say(text)
-    engine.runAndWait()
-    engine.stop()  # Ensure cleanup
 
 @app.route("/")
 def index():
@@ -67,11 +60,11 @@ def index():
 @app.route("/process_audio", methods=["POST"])
 def process_audio():
     if "audio" not in request.files:
-        print("🚨 No audio file received!")  # Debug log
+        print("No audio file received!")  # Debug log
         return jsonify({"error": "No audio file provided"}), 400
 
     audio_file = request.files["audio"]
-    print(f"✅ Received file: {audio_file.filename}")
+    print(f"Received file: {audio_file.filename}")
 
     input_path = "temp_audio.webm"
     wav_path = "temp_audio.wav"
@@ -80,15 +73,15 @@ def process_audio():
 
     # Debug: Check if file exists
     if not os.path.exists(input_path):
-        print("🚨 File save failed!")
+        print("File save failed!")
         return jsonify({"error": "File save failed!"}), 500
 
     try:
         audio = AudioSegment.from_file(input_path)
         audio.export(wav_path, format="wav")
-        print("✅ Conversion successful!")
+        print("Conversion successful!")
     except Exception as e:
-        print(f"🚨 Conversion failed: {e}")
+        print(f"Conversion failed: {e}")
         return jsonify({"error": f"Conversion failed: {e}"}), 500
 
     # Speech recognition
@@ -97,20 +90,40 @@ def process_audio():
         audio_data = recognizer.record(source)
         try:
             user_message = recognizer.recognize_google(audio_data).lower()
-            print(f"✅ Recognized speech: {user_message}")
+            print(f"Recognized speech: {user_message}")
             # send to agent
             agent_response = send_to_agent(user_message)
+            # sanitize response
+            agent_response = sanitize_response(agent_response)
             messages.append({"role": "user", "content": user_message})
             messages.append({"role": "agent", "content": agent_response})
         except sr.UnknownValueError:
-            print("🚨 Speech not understood!")
+            print("Speech not understood!")
             user_message = "Could not understand audio."
             agent_response = "Could not understand audio."
         except sr.RequestError as e:
-            print(f"🚨 Speech recognition error: {e}")
+            print(f"Speech recognition error: {e}")
             user_message = f"Error: {e}"
 
     return jsonify({"user": user_message, "response": agent_response})
+
+@app.route("/process_text", methods=["POST"])
+def process_text():
+    data = request.get_json()
+    user_message = data.get("message", "").strip()
+    
+    if not user_message:
+        return jsonify({"response": "Please enter a valid message."})
+
+    # Send message to AI model
+    agent_response = send_to_agent(user_message)
+    # sanitize response
+    agent_response = sanitize_response(agent_response)
+    
+    messages.append({"role": "user", "content": user_message})
+    messages.append({"role": "agent", "content": agent_response})
+
+    return jsonify({"response": agent_response})
 
 messages = []
 messages.append({"role": "system", "content": "You are a personal agent assistant."})
@@ -121,6 +134,16 @@ def send_to_agent(message):
     response = chain.invoke({"history": history_text, "question": message})
     return response
 
+def sanitize_response(agent_response):
+    # Remove <think> sections from the response
+    start_tag = "<think>"
+    end_tag = "</think>"
+    while start_tag in agent_response and end_tag in agent_response:
+        start_idx = agent_response.find(start_tag)
+        end_idx = agent_response.find(end_tag) + len(end_tag)
+        # Remove the section
+        agent_response = agent_response[:start_idx] + agent_response[end_idx:]
+    return agent_response
 
 
 if __name__ == "__main__":
