@@ -25,16 +25,14 @@ h1 {
     margin: 0 auto;
 }
 
-/* Input Field */
 #userInput {
-    flex: 1; /* Make the input field expand */
+    width: 100%; /* Adjust as needed */
+    min-height: 40px; /* Starting height */
+    resize: none; /* Disable manual resizing */
+    overflow: hidden; /* Prevent scrollbars */
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    font-size: 1rem;
-    outline: none;
-    overflow: auto;
-    resize: both;
+    font-size: 16px; /* Match the desired style */
+    box-sizing: border-box; /* Ensure padding is included in the height/width */
 }
 
 /* Buttons */
