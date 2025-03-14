@@ -26,7 +26,7 @@ import os
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_huggingface import HuggingFaceEndpoint
+from langchain_ollama.llms import OllamaLLM
 from pydub import AudioSegment 
 
 
@@ -47,13 +47,8 @@ Now, Agent, please reply:
 """
 
 prompt = ChatPromptTemplate.from_template(template)
-endpoint_url="http://127.0.0.1:8000/v1"
-model = HuggingFaceEndpoint(
-    endpoint_url=f"{endpoint_url}",
-    task='text-generation',
-    max_new_tokens=500,
-    temperature=0.7,
-)
+#model = OllamaLLM(model="llama3.1") 
+model = OllamaLLM(model="deepseek-r1:14b") 
 chain = prompt | model
 
 messages = []
