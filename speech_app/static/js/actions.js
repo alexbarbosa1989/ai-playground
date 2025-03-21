@@ -17,6 +17,10 @@ document.getElementById("userInput").addEventListener("keypress", function (even
     }
 });
 
+document.getElementById("attachButton").addEventListener("click", function () {
+    document.getElementById("fileInput").click();
+});
+
 async function sendTextMessage() {
     let userMessage = document.getElementById("userInput").value.trim();
     if (!userMessage) return;
@@ -113,3 +117,39 @@ userInput.addEventListener("input", () => {
     userInput.style.height = "auto"; // Reset the height to auto
     userInput.style.height = userInput.scrollHeight + "px"; // Set the height based on scrollHeight
 });
+
+document.getElementById("fileInput").addEventListener("change", function () {
+    let file = this.files[0];
+    if (!file) return;
+
+    let formData = new FormData();
+    formData.append("file", file);
+
+    document.getElementById("status").innerText = "Uploading...";
+
+    fetch("/process_file", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateChat(`📎 Uploaded: ${file.name}`, data.response);
+        document.getElementById("status").innerText = "";
+    })
+    .catch(error => {
+        console.error("File upload error:", error);
+        document.getElementById("status").innerText = "Upload failed!";
+    });
+});
+
+function updateChat(userMessage, agentResponse) {
+    document.getElementById("userText").innerText = userMessage;
+    document.getElementById("agentResponse").innerText = agentResponse;
+
+    let responseContainer = document.getElementById("responseContainer");
+    if (agentResponse && agentResponse !== "---") {
+        responseContainer.style.display = "block";
+    } else {
+        responseContainer.style.display = "none";
+    }
+}

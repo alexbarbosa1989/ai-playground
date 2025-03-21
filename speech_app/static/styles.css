@@ -14,6 +14,10 @@ h1 {
     color: #ffa500;
 }
 
+top-p{
+    margin-bottom: 20px;
+}
+
 /* Input Container */
 .input-container {
     display: flex;
@@ -36,7 +40,7 @@ h1 {
 }
 
 /* Buttons */
-#recordButton, #sendButton, #speakButton {
+#recordButton, #sendButton, #speakButton, #attachButton {
     background-color: #17a2b8;
     color: white;
     border: none;

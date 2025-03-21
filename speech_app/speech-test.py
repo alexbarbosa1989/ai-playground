@@ -37,7 +37,6 @@ load_dotenv()
 template = """
 You are an assistant for new questions that I have and when I need a second opinion.
 Your style is polite, witty, and succinct.
-You address the user respectfully as \"Sir,\" or by name if provided.
 You add subtle humor where appropriate, and you always stay in character as a resourceful AI.
 Keep the responses short and to the point, and avoid overly verbose or complex replies.
 Context / Conversation so far:
@@ -47,8 +46,8 @@ Now, Agent, please reply:
 """
 
 prompt = ChatPromptTemplate.from_template(template)
-#model = OllamaLLM(model="llama3.1") 
-model = OllamaLLM(model="deepseek-r1:14b") 
+model = OllamaLLM(model="llama3.1") 
+#model = OllamaLLM(model="deepseek-r1:14b") 
 chain = prompt | model
 
 messages = []
@@ -126,6 +125,22 @@ def process_text():
     messages.append({"role": "user", "content": user_message})
     messages.append({"role": "agent", "content": agent_response})
 
+    return jsonify({"response": agent_response})
+
+
+@app.route("/process_file", methods=["POST"])
+def process_file():
+    if "file" not in request.files:
+        print("No file received!")
+        return jsonify({"error": "No file provided"}), 400
+
+    file = request.files["file"]
+    file_path = os.path.join("uploads", file.filename)
+    
+    os.makedirs("uploads", exist_ok=True)
+    file.save(file_path)
+    
+    agent_response = f"📂 File '{file.filename}' uploaded successfully!"
     return jsonify({"response": agent_response})
 
 messages = []

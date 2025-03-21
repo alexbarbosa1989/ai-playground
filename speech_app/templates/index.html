@@ -9,15 +9,23 @@
 </head>
 
 <body>
+    <p class="top-p"></p>
     <div class="input-container">
         <input type="text" id="userInput" placeholder="Type a message...">
         <button id="sendButton" class="tooltip">➡️
             <span class="tooltiptext">Send Message</span>
         </button>
+        <button id="attachButton" class="tooltip">📎
+            <span class="tooltiptext">Attach File</span>
+        </button>
+        <input type="file" id="fileInput" style="display: none;">
         <button id="recordButton" class="tooltip">🎤
             <span class="tooltiptext">Talk to Agent</span>
         </button>
     </div>
+
+    <div class="messages" id="messages"></div>
+
     <p id="status"></p>
     <div class="response-container">
         <p><strong>User:</strong> <span id="userText">---</span></p>
