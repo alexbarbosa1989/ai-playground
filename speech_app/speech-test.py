@@ -1,24 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-## Here should install first:
-#sudo dnf install python3-pyaudio 
-#sudo dnf install portaudio-devel redhat-rpm-config
-
-# if video/audio play fails
-#sudo dnf swap wireplumber pipewire-media-session
-#systemctl --user restart pipewire-media-session
-
-## pre-requisite libraries
-#pip install SpeechRecognition
-#pip install pyttsx3
-#pip install langchain_huggingface
-#pip install langchain-core
-#pip install langchain_ollama
-#pip install PyAudio
-#pip install flask
-#pip install pydub
-
 # import libraries
 import speech_recognition as sr
 import pyttsx3
