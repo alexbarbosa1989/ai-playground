@@ -11,8 +11,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
 from pydub import AudioSegment 
 
-
-
+# Load environment variables
 load_dotenv()
 
 # AI model setup
