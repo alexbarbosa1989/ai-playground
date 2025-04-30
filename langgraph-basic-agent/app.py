@@ -7,10 +7,37 @@ from langchain_core.runnables import RunnableLambda
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from dotenv import load_dotenv
+from typing_extensions import TypedDict
+from typing import Annotated, Literal
+from langgraph.graph.message import add_messages
 
 import os
 
 load_dotenv() 
+
+# define the state for the graph TypedDict
+# this is used to define the state of the graph
+class State(TypedDict):
+    messages: Annotated[list, add_messages]
+    retriever: any
+    compliant: bool
+    compliance_explanation: str
+
+# define the node class
+# this class is used to define the nodes in the graph
+class MyNode:
+    def __init__(self, name: str):
+        self.name = name
+
+    def __call__(self, state: State):
+        return {"messages": [("assistant", f"Called node {self.name}")]}
+
+# routine function to determine the next node based on the state
+# this function is called after each node to determine the next node
+def route(state) -> Literal["entry_node", "__end__"]:
+    if len(state["messages"]) > 10:
+        return "__end__"
+    return "entry_node"
 
 # set up OpenAI API key
 api_key = os.getenv("OPENAI_API_KEY")
@@ -34,7 +61,10 @@ def upload_and_extract(state):
     retriever = vectorstore.as_retriever()
 
     state["retriever"] = retriever
-    return state
+    return {
+        "messages": state.get("messages", []),
+        "retriever": retriever
+    }
 
 def check_compliance_with_retrieval(state):
     print("Checking for 'termination clause'...")
@@ -64,7 +94,7 @@ def respond(state):
     print(f"Reasoning: {state['compliance_explanation']}")
     return state
 
-graph = StateGraph(dict)
+graph = StateGraph(State)
 
 graph.add_node("upload", RunnableLambda(upload_and_extract))
 graph.add_node("check", RunnableLambda(check_compliance_with_retrieval))
@@ -78,3 +108,6 @@ graph.set_finish_point("respond")
 # execute the workflow
 workflow = graph.compile()
 workflow.invoke({})
+ 
+# print the graph in ASCII format (OPTIONAL)
+#print(workflow.get_graph().draw_ascii())
