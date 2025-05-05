@@ -2,7 +2,9 @@ from langgraph.graph import StateGraph
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
 from langchain_openai import ChatOpenAI
-from langchain.chains import RetrievalQA
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain.chains.retrieval import create_retrieval_chain
+from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnableLambda
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -69,18 +71,32 @@ def upload_and_extract(state):
 def check_compliance_with_retrieval(state):
     print("Checking for 'termination clause'...")
 
-    qa = RetrievalQA.from_chain_type(
-        llm=ChatOpenAI(model="gpt-4.1-mini"),
-        retriever=state["retriever"],
-        return_source_documents=True
+    # Define a prompt
+    prompt = PromptTemplate.from_template(
+        "Use the following context to answer the question:\n\n{context}\n\nQuestion: {input}"
     )
 
-    query = "Does the document contain a termination clause? Answer yes or no, and explain."
-    result = qa.invoke({"query": query})
+    # Create the document chain
+    doc_chain = create_stuff_documents_chain(
+        llm=ChatOpenAI(model="gpt-4.1-mini"),
+        prompt=prompt,
+    )
 
-    answer = result["result"].lower()
+    # Create the retrieval chain
+    chain = create_retrieval_chain(
+        retriever=state["retriever"],
+        combine_docs_chain=doc_chain,
+    )
+
+    # Ask the question
+    query = "Does the document contain a termination clause? Answer yes or no, and explain."
+    result = chain.invoke({"input": query})
+
+    # Evaluate the result
+    answer = result["answer"].lower()
     compliant = "yes" in answer
 
+    # Update state
     state["compliant"] = compliant
     state["compliance_explanation"] = answer
     return state
