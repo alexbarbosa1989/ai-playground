@@ -81,9 +81,18 @@ def check_compliance_with_retrieval(state):
         "Use the following context to answer the question:\n\n{context}\n\nQuestion: {input}"
     )
 
+    # define the LLM inference model
+    if(is_vllm):
+        llm =ChatOpenAI(
+            base_url="http://localhost:8000/v1",
+            model="Qwen/Qwen3-4B-FP8"
+        )
+    else:
+        llm = ChatOpenAI(model="gpt-4.1-mini")
+
     # Create the document chain
     doc_chain = create_stuff_documents_chain(
-            llm=ChatOpenAI(model="gpt-4.1-mini"),
+            llm=llm,
             prompt=prompt,
     )
 
@@ -115,6 +124,7 @@ def respond(state):
     print(f"Reasoning: {state['compliance_explanation']}")
     return state
 
+# set to True for vllm, False for OpenAI
 is_vllm = True
 
 # build the state graph
