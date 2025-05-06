@@ -1,6 +1,7 @@
 from langgraph.graph import StateGraph
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import ChatOpenAI
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
@@ -57,7 +58,11 @@ def upload_and_extract(state):
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     chunks = splitter.split_documents(documents)
 
-    embeddings = OpenAIEmbeddings()
+    # Create embeddings
+    if (is_vllm):
+        embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+    else:
+        embeddings = OpenAIEmbeddings()
 
     vectorstore = Chroma.from_documents(chunks, embedding=embeddings)
     retriever = vectorstore.as_retriever()
@@ -78,8 +83,8 @@ def check_compliance_with_retrieval(state):
 
     # Create the document chain
     doc_chain = create_stuff_documents_chain(
-        llm=ChatOpenAI(model="gpt-4.1-mini"),
-        prompt=prompt,
+            llm=ChatOpenAI(model="gpt-4.1-mini"),
+            prompt=prompt,
     )
 
     # Create the retrieval chain
@@ -110,6 +115,9 @@ def respond(state):
     print(f"Reasoning: {state['compliance_explanation']}")
     return state
 
+is_vllm = True
+
+# build the state graph
 graph = StateGraph(State)
 
 graph.add_node("upload", RunnableLambda(upload_and_extract))
