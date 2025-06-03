@@ -85,7 +85,7 @@ def check_compliance_with_retrieval(state):
     if(is_vllm):
         llm =ChatOpenAI(
             base_url="http://localhost:8000/v1",
-            model="Qwen/Qwen3-4B-FP8"
+            model="Qwen/Qwen3-0.6B-Base" #model="Qwen/Qwen3-4B-FP8"
         )
     else:
         llm = ChatOpenAI(model="gpt-4.1-mini")
@@ -125,7 +125,7 @@ def respond(state):
     return state
 
 # set to True for vllm, False for OpenAI
-is_vllm = True
+is_vllm = False
 
 # build the state graph
 graph = StateGraph(State)
@@ -144,4 +144,4 @@ workflow = graph.compile()
 workflow.invoke({})
  
 # print the graph in ASCII format (OPTIONAL)
-#print(workflow.get_graph().draw_ascii())
+print(workflow.get_graph().draw_ascii())

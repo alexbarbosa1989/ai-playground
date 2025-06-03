@@ -1,6 +1,7 @@
 langchain 
 langgraph
 langchain_community
+langchain_huggingface
 langchain_openai
 chromadb 
 tiktoken 
