@@ -1,0 +1,9 @@
+langchain 
+langgraph
+langchain_community
+langchain_openai
+chromadb 
+tiktoken 
+pypdf
+dotenv
+grandalf
