@@ -41,9 +41,6 @@ def route(state) -> Literal["entry_node", "__end__"]:
         return "__end__"
     return "entry_node"
 
-# get the document path from environment variable
-document_path = os.getenv("DOCUMENT_PATH")
-
 # process document
 def upload_and_extract(state):
     print("Loading & Chunking PDF...")

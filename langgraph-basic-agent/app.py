@@ -44,7 +44,6 @@ def route(state) -> Literal["entry_node", "__end__"]:
 
 # set up OpenAI API key
 api_key = os.getenv("OPENAI_API_KEY")
-document_path = os.getenv("DOCUMENT_PATH")
 
 # process document
 def upload_and_extract(state):
