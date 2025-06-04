@@ -132,4 +132,4 @@ workflow = graph.compile()
 workflow.invoke({})
  
 # print the graph in ASCII format (OPTIONAL)
-print(workflow.get_graph().draw_ascii())
+#print(workflow.get_graph().draw_ascii())
