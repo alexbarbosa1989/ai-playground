@@ -2,7 +2,7 @@ apiVersion: serving.kserve.io/v1alpha1
 kind: ServingRuntime
 metadata:
   annotations:
-    opendatahub.io/recommended-accelerators: ''
+    opendatahub.io/recommended-accelerators: ""
     opendatahub.io/runtime-version: v0.11.2
     openshift.io/display-name: vLLM NVIDIA custom CPU ServingRuntime for KServe
     opendatahub.io/apiProtocol: REST
@@ -25,6 +25,8 @@ spec:
       env:
         - name: HF_HOME
           value: /tmp/hf_home
+        - name: VLLM_CACHE_ROOT
+          value: /tmp/cache
       image: quay.io/abarbosa/vll-cpu:0.11.2
       name: kserve-container
       ports:
