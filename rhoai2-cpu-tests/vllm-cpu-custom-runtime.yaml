@@ -4,7 +4,7 @@ metadata:
   annotations:
     opendatahub.io/recommended-accelerators: ""
     opendatahub.io/runtime-version: v0.11.2
-    openshift.io/display-name: vLLM NVIDIA custom CPU ServingRuntime for KServe
+    openshift.io/display-name: vLLM custom CPU ServingRuntime for KServe
     opendatahub.io/apiProtocol: REST
   labels:
     opendatahub.io/dashboard: "true"
