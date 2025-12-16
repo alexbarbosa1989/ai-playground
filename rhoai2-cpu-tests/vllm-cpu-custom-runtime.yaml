@@ -27,7 +27,7 @@ spec:
           value: /tmp/hf_home
         - name: VLLM_CACHE_ROOT
           value: /tmp/cache
-      image: quay.io/abarbosa/vll-cpu:0.11.2
+      image: quay.io/abarbosa/vllm-cpu:0.11.2
       name: kserve-container
       ports:
         - containerPort: 8080
