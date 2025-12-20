@@ -7,5 +7,5 @@
  - Local VLLM usage (GPU and CPU)
  - Basic model chat template interactions via cURL
 
-### [LangChain agent local usage]((https://github.com/alexbarbosa1989/ai-playground/blob/main/langgraph-basic-agent/README.md))
+### [LangChain agent local usage](https://github.com/alexbarbosa1989/ai-playground/blob/main/langgraph-basic-agent/README.md)
 - Running a basic agent in the local machine
