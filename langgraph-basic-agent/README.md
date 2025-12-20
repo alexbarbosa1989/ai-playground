@@ -4,6 +4,7 @@
 ~~~
 source ~/myenv/bin/activate
 ~~~
+Note: if need set from scratch the python venv, refers [VLLM Basics notes](https://github.com/alexbarbosa1989/ai-playground/blob/main/ai-basics/vllm-basics.md#vllm-basics)
 
 ### 2. Install app requirements
 ~~~
@@ -13,7 +14,58 @@ pip install requirements.txt
 ### 3. Set local .env file
 echo "DOCUMENT_PATH=<local-dir>/ai-playground/langgraph-basic-agent/example/contract-template.pdf" >> .env
 
-### 4. Set is_vllm in the app.py. Set to True for vllm, False for OpenAI:
+### 4. Set [is_vllm in the app.py - L128](https://github.com/alexbarbosa1989/ai-playground/blob/bdaf14ba9af36fb1a50be67d247cb81d2bdb8d91/langgraph-basic-agent/app.py#L128). Set to True for vllm, False for OpenAI:
 ~~~
 is_vllm = True
+~~~
+
+### 4. Run the app:
+~~~
+app.py
+~~~
+Expected output:
+~~~
+Loading & Chunking PDF...
+Checking for 'termination clause'...
+Final Response: Document Approved.
+Reasoning: <think>
+okay, let me look at the user's question. they want to know if the provided document contains a termination clause. the user also wants the answer to be "yes" or "no" and explain.
+
+looking at the context given, there are three sections: termination, liability, and governing law. each of these sections starts with "3." so, the document does have a termination clause. 
+
+section 3 is specifically about termination, which states that either party can terminate with 30 days of written notice. also, upon termination, all outstanding balances must be paid. that's the main point. the other sections talk about payment terms, confidentiality, and governing law, which are separate. 
+
+so, the answer should be yes, and explain that section 3 includes the termination clause. i need to make sure i didn't miss any other parts. the user might be checking if the document includes all necessary terms for termination, and they might be preparing a contract or something similar. the key here is to identify the exact section where the termination is outlined.
+</think>
+
+**answer:** yes.  
+
+the document contains a termination clause, as specified in section 3 ("3. termination"), which outlines that either party may terminate the agreement with 30 days of written notice. additionally, upon termination, all outstanding balances must be paid. this satisfies the requirement for a termination clause as requested.
++-----------+  
+| __start__ |  
++-----------+  
+      *        
+      *        
+      *        
+  +--------+   
+  | upload |   
+  +--------+   
+      *        
+      *        
+      *        
+  +-------+    
+  | check |    
+  +-------+    
+      *        
+      *        
+      *        
+ +---------+   
+ | respond |   
+ +---------+   
+      *        
+      *        
+      *        
+ +---------+   
+ | __end__ |   
+ +---------+ 
 ~~~
