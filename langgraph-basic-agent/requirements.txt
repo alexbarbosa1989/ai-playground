@@ -3,6 +3,7 @@ langgraph
 langchain_community
 langchain_huggingface
 langchain_openai
+langchain_classic
 chromadb 
 tiktoken 
 pypdf
