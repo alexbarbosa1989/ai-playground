@@ -16,6 +16,20 @@ pip install requirements.txt
 echo "DOCUMENT_PATH=<local-dir>/ai-playground/langgraph-basic-agent/example/contract-template.pdf" >> .env
 ~~~
 
+### 4. In a another terminal, serve the model:
+~~~
+podman run -ti --rm --pull=newer \
+--user 0 --shm-size=0 --name vllm \
+--env "HUGGING_FACE_HUB_TOKEN=$HF_TOKEN" \
+--env "HF_HUB_OFFLINE=0" \
+--replace -v ~/.cache/huggingface:/root/.cache/huggingface \
+--stop-signal=SIGKILL --device nvidia.com/gpu=all \
+--security-opt=label=disable --hooks-dir=/etc/containers/oci/hooks.d/ \
+-p 8000:8000 \
+vllm/vllm-openai:latest \
+--model Qwen/Qwen3-0.6B --max_model_len=4096
+~~~
+
 ### 5. Run the app:
 ~~~
 python app.py
