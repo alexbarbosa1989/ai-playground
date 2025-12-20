@@ -12,14 +12,11 @@ pip install requirements.txt
 ~~~
 
 ### 3. Set local .env file
+~~~
 echo "DOCUMENT_PATH=<local-dir>/ai-playground/langgraph-basic-agent/example/contract-template.pdf" >> .env
-
-### 4. Set [is_vllm in the app.py - L128](https://github.com/alexbarbosa1989/ai-playground/blob/bdaf14ba9af36fb1a50be67d247cb81d2bdb8d91/langgraph-basic-agent/app.py#L128). Set to True for vllm, False for OpenAI:
-~~~
-is_vllm = True
 ~~~
 
-### 4. Run the app:
+### 5. Run the app:
 ~~~
 app.py
 ~~~
