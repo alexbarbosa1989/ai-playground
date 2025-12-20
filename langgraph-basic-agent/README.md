@@ -18,7 +18,7 @@ echo "DOCUMENT_PATH=<local-dir>/ai-playground/langgraph-basic-agent/example/cont
 
 ### 5. Run the app:
 ~~~
-app.py
+python app.py
 ~~~
 Expected output:
 ~~~
