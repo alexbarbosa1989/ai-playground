@@ -9,3 +9,6 @@
 
 ### [LangChain agent local usage](https://github.com/alexbarbosa1989/ai-playground/blob/main/langgraph-basic-agent/README.md)
 - Running a basic agent in the local machine
+
+### [RAIIS agent local usage](https://github.com/alexbarbosa1989/rhaiis-langchain)
+- Running a basic agent in the local machine serving the model with RHAIIS
