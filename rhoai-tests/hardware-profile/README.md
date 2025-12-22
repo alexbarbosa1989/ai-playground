@@ -29,6 +29,14 @@ Patch the `OdhDashboardConfig` setting `disableHardwareProfiles` as `false`:
 oc patch OdhDashboardConfig odh-dashboard-config -n redhat-ods-applications --type=merge --patch='{"spec":{"dashboardConfig":{"disableHardwareProfiles": false}}}'
 ~~~
 
+When opens the `OdhDashboardConfig` CR, it shouls show:
+~~~
+...
+  spec:
+    dashboardConfig:
+      disableHardwareProfiles: false
+~~~
+
 Open the OpenShift AI console and verify that "Hardware Profile" is visible in the Setting menu (Settings
 Hardware profiles):
 <img width="230" height="618" alt="hw-profile" src="https://github.com/user-attachments/assets/1bded4e3-cf06-4b73-9d91-774576be6193" />
