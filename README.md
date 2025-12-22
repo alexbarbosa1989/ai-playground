@@ -12,3 +12,6 @@
 
 ### [RAIIS agent local usage](https://github.com/alexbarbosa1989/rhaiis-langchain)
 - Running a basic agent in the local machine serving the model with RHAIIS
+
+### RHOAI tests
+- [Enable GPU in the Openshift cluster and Hardware Profiles](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/hardware-profile)
