@@ -38,4 +38,5 @@ When opens the `OdhDashboardConfig` CR, it shouls show:
 ~~~
 
 Open the OpenShift AI console and verify that "Hardware Profile" is visible in the Setting menu (Settings > Hardware profiles) in the left panel:
+
 <img width="230" height="618" alt="hw-profile" src="https://github.com/user-attachments/assets/1bded4e3-cf06-4b73-9d91-774576be6193" />
