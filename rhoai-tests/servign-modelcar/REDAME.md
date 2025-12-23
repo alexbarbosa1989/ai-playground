@@ -1,0 +1,69 @@
+## Serving a Model in RHOAI using modelcar
+
+
+~~~
+oc project dsc-test
+~~~
+
+~~~
+oc get pods
+~~~
+Expected output:
+~~~
+NAME                                   READY   STATUS    RESTARTS   AGE
+tinyllama-predictor-5bb5f8f886-2zh6m   2/2     Running   0          7m3s
+~~~
+
+~~~
+oc rsh tinyllama-predictor-5bb5f8f886-2zh6m
+~~~
+sh-5.1$ nvidia-smi
+Mon Dec 22 16:53:51 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4060 Ti     On  |   00000000:06:00.0 Off |                  N/A |
+|  0%   52C    P8             13W /  165W |   14921MiB /  16380MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A              87      C   VLLM::EngineCore                      14912MiB |
++-----------------------------------------------------------------------------------------+
+~~~
+
+~~~
+oc get routes
+~~~
+NAME        HOST/PORT                             PATH   SERVICES              PORT   TERMINATION     WILDCARD
+tinyllama   tinyllama-dsc-test.apps-crc.testing          tinyllama-predictor   http   edge/Redirect   None
+~~~
+
+~~~
+curl -v --connect-timeout 5 --max-time 30 \
+  --trace-time --trace debug.txt \
+  -X POST "https://tinyllama-dsc-test.apps-crc.testing/v1/chat/completions" \
+  -H "Content-Type: application/json"  \
+  --data '{"model": "tinyllama","messages": [{"role": "user","content": "What is the capital of France?"}]}' \
+  --insecure
+~~~
+~~~
+Warning: --trace overrides an earlier trace/verbose option
+Note: Unnecessary use of -X or --request, POST is already inferred.
+{"id":"chatcmpl-651e941e964942b8b1e53660e7329864","object":"chat.completion","created":1766422534,"model":"tinyllama","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of France is Paris, located in the Ile-de-France region.","refusal":null,"annotations":null,"audio":null,"function_call":null,"tool_calls":[],"reasoning_content":null},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null}],"service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":23,"total_tokens":42,"completion_tokens":19,"prompt_tokens_details":null},"prompt_logprobs":null,"prompt_token_ids":null,"kv_transfer_params":null}
+~~~
+
+~~~
+(APIServer pid=4) INFO 12-22 16:55:34 [chat_utils.py:470] Detected the chat template content format to be 'string'. You can set `--chat-template-content-format` to override this.
+(APIServer pid=4) INFO: 10.217.0.2:59560 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+(APIServer pid=4) INFO 12-22 16:55:43 [loggers.py:123] Engine 000: Avg prompt throughput: 2.3 tokens/s, Avg generation throughput: 1.9 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+(APIServer pid=4) INFO 12-22 16:55:53 [loggers.py:123] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+~~~
