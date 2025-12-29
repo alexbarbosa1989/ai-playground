@@ -17,6 +17,7 @@ tinyllama-predictor-5bb5f8f886-2zh6m   2/2     Running   0          7m3s
 ~~~
 oc rsh tinyllama-predictor-5bb5f8f886-2zh6m
 ~~~
+~~~
 sh-5.1$ nvidia-smi
 Mon Dec 22 16:53:51 2025       
 +-----------------------------------------------------------------------------------------+
