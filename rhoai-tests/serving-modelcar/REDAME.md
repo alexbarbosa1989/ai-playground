@@ -44,6 +44,7 @@ Mon Dec 22 16:53:51 2025
 ~~~
 oc get routes
 ~~~
+~~~
 NAME        HOST/PORT                             PATH   SERVICES              PORT   TERMINATION     WILDCARD
 tinyllama   tinyllama-dsc-test.apps-crc.testing          tinyllama-predictor   http   edge/Redirect   None
 ~~~
