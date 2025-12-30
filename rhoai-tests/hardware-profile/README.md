@@ -40,3 +40,18 @@ When opens the `OdhDashboardConfig` CR, it shouls show:
 Open the OpenShift AI console and verify that "Hardware Profile" is visible in the Setting menu (Settings > Hardware profiles):
 
 <img width="230" height="618" alt="hw-profile" src="https://github.com/user-attachments/assets/1bded4e3-cf06-4b73-9d91-774576be6193" />
+
+
+## Creating a Hardware Profile
+
+### Navigate Settings > Hardware profiles > Add new hardware profile
+<img width="1016" height="480" alt="add-new-hw-profile" src="https://github.com/user-attachments/assets/299be9d5-f602-4194-831b-6863746d9d95" />
+
+### Fill the hardware profile form. Important, add "nvidia.com/gpu" as  "Resource identifier"
+<img width="731" height="591" alt="fill-hw-form-Edit" src="https://github.com/user-attachments/assets/ff0df440-449b-46ca-9f91-8aaeb58f2b85" />
+
+### Check and edit the configured Memory&GPU resources for the hardware profile
+<img width="1035" height="300" alt="hw-profile-resources-summary" src="https://github.com/user-attachments/assets/bf6b3591-b606-4262-a1ec-baef37141ed9" />
+
+### Finish the hardware profile configuration
+<img width="1044" height="379" alt="finish-hw-profile" src="https://github.com/user-attachments/assets/838f7450-29e9-4b21-8045-e6717c5fff4f" />
