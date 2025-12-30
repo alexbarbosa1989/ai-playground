@@ -17,6 +17,4 @@
 
 ### [Enable GPU in the Openshift cluster and Hardware Profiles](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/hardware-profile)
 
-### [Enable and configure a Hardware porfile](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/hardware-profile). The GPU must be available in the Openshift cluster to enable correctly the Hardware profile
-
 ### [Configure minio storage in the Openshift cluster](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/minio)
