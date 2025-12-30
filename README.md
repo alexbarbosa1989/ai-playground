@@ -16,5 +16,10 @@
 ## RHOAI tests
 
 ### [Enable GPU in the Openshift cluster and Hardware Profiles](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/hardware-profile)
+- Enable GPU in the Openshift Cluster
+- Enable Hardware profile
+- Create a Hardware profile
 
 ### [Configure minio storage in the Openshift cluster](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/minio)
+- Create an OpenShift project for Minio
+- Deploy minio and test the created resources
