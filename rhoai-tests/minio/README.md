@@ -26,3 +26,10 @@ service/minio-service created
 route.route.openshift.io/minio-api created
 route.route.openshift.io/minio-ui created
 ~~~
+
+### Check the minio exposed service route:
+~~~
+oc get route
+~~~
+Open it in a browser:
+<img width="1363" height="651" alt="minio-ui" src="https://github.com/user-attachments/assets/37f65d82-3d79-48bd-a5a1-d9398f71bd54" />
