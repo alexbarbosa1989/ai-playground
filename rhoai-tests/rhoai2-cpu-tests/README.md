@@ -5,7 +5,7 @@ Verified in KBase article https://access.redhat.com/solutions/7134585
 1. Create the custom runtime: 
 - In the RHOAI Dashboard, navigate in the left panel to Settings > Runtimes. Then, 
 - Click "Add serving runtime" button. 
-- In the editor, copy the contents from the `llm-cpu-custom-runtime.yaml` file in https://github.com/alexbarbosa1989/ai-playground/blob/main/rhoai2-cpu-tests/vllm-cpu-custom-runtime.yaml. It references the `quay.io/abarbosa/vllm-cpu:0.11.2` built for these test purposes.
+- In the editor, copy the contents from the `llm-cpu-custom-runtime.yaml` file in https://github.com/alexbarbosa1989/ai-playground/blob/main/rhoai2-cpu-tests/vllm-cpu-custom-runtime.yaml. It references the `quay.io/abarbosa/vllm-cpu:0.11.2` image built for these test purposes.
 - Click the "Create" button.
 
 2. Create a DS project and deploy the model.
