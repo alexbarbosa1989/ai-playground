@@ -23,3 +23,7 @@
 ### [Configure minio storage in the Openshift cluster](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/minio)
 - Create an OpenShift project for Minio
 - Deploy minio and test the created resources
+
+### [Serving models with custom vllm-cpu runtime in OpenShift AI](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/rhoai2-cpu-tests)
+- Create a custom vLLM custom runtime
+- Serving a model using the custom runtime and test it
