@@ -1,5 +1,8 @@
 ## Serving a Model in RHOAI using modelcar
 
+### Create a data science project. Navigate **Data science projects** > **Create project**
+That action create a new OpenShift namespace. For example if the data-scienc project's name is `dsc-test`, it creates the `dsc-test` namespace
+<img width="857" height="264" alt="create-dsc-project" src="https://github.com/user-attachments/assets/1ae79f25-c87f-488b-94dc-5041d105ad7f" />
 
 ~~~
 oc project dsc-test
@@ -18,6 +21,7 @@ tinyllama-predictor-5bb5f8f886-2zh6m   2/2     Running   0          7m3s
 oc rsh tinyllama-predictor-5bb5f8f886-2zh6m
 ~~~
 ~~~
+
 sh-5.1$ nvidia-smi
 Mon Dec 22 16:53:51 2025       
 +-----------------------------------------------------------------------------------------+
