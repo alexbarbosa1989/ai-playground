@@ -10,6 +10,7 @@ That action create a new OpenShift namespace. For example if the data-scienc pro
   - Connection type: URI - v1
   - URI: oci://quay.io/rh-aiservices-bu/tinyllama:1.0
 <img width="749" height="585" alt="create-oci-connection" src="https://github.com/user-attachments/assets/9db2bc3b-6769-448d-8cba-1c8e87b38c46" />
+
 - Finish the OCI connection configuration
 <img width="1066" height="308" alt="finish-oci-connection" src="https://github.com/user-attachments/assets/fd4cc500-cc3f-4a1a-ab9e-29f11a8f864c" />
  
