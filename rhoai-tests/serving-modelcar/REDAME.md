@@ -14,6 +14,15 @@ That action create a new OpenShift namespace. For example if the data-scienc pro
 - Finish the OCI connection configuration
 <img width="1066" height="308" alt="finish-oci-connection" src="https://github.com/user-attachments/assets/fd4cc500-cc3f-4a1a-ab9e-29f11a8f864c" />
  
+### Serving the model
+- Navigate **Data science projects** > **dsc-test** > **Models** > **Single-model serving platform** > **Deploy model**
+
+- Fill the `Deploy model` form making sure you're selecting the **vLLM NVIDIA GPU ServingRuntime for KServe** provided by RHOAI and the [previously created Hardware Profile](https://github.com/alexbarbosa1989/ai-playground/blob/main/rhoai-tests/hardware-profile/README.md)
+<img width="834" height="496" alt="deploy-single-model-vllm" src="https://github.com/user-attachments/assets/a66ae30c-1724-40e1-83f5-4d5073e0a83a" />
+
+<img width="841" height="427" alt="set-hw-profile-model-edit" src="https://github.com/user-attachments/assets/e1ff420e-9551-4b5b-8c33-ebfc33baeb71" />
+
+
 
 ## Checking the Served Model
 ~~~
