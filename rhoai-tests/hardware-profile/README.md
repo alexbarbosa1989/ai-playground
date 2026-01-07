@@ -23,7 +23,7 @@ nvidia-node-status-exporter-g596h              1/1     Running     4          6d
 nvidia-operator-validator-wb8f5                1/1     Running     0          7m23s
 ~~~
 
-### Enable the Hardware Profile in the OdhDashboardConfig CustomResource (CR):
+### Enable the Hardware Profile in the OdhDashboardConfig CustomResource (CR) (Only for RHOAI 2 - In RHOAI 3 comes enabled by default):
 Patch the `OdhDashboardConfig` setting `disableHardwareProfiles` as `false`:
 ~~~
 oc patch OdhDashboardConfig odh-dashboard-config -n redhat-ods-applications --type=merge --patch='{"spec":{"dashboardConfig":{"disableHardwareProfiles": false}}}'
@@ -42,7 +42,7 @@ Open the OpenShift AI console and verify that "Hardware Profile" is visible in t
 <img width="230" height="618" alt="hw-profile" src="https://github.com/user-attachments/assets/1bded4e3-cf06-4b73-9d91-774576be6193" />
 
 
-## Creating a Hardware Profile
+## Creating a Hardware Profile (Mandatory in both RHOAI 2 and RHOAI 3 for accelerator configuration)
 
 ### Navigate Settings > Hardware profiles > Add new hardware profile
 <img width="1016" height="480" alt="add-new-hw-profile" src="https://github.com/user-attachments/assets/299be9d5-f602-4194-831b-6863746d9d95" />
