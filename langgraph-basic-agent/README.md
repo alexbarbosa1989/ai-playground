@@ -11,7 +11,7 @@ Note: if need set from scratch the python venv, refers [VLLM Basics notes](https
 pip install requirements.txt
 ~~~
 
-### 3. Set local .env file
+### 3. Set the PDF document path in a .env file
 ~~~
 echo "DOCUMENT_PATH=<local-dir>/ai-playground/langgraph-basic-agent/example/contract-template.pdf" >> .env
 ~~~
