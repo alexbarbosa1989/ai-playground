@@ -27,3 +27,9 @@
 ### [Serving models with custom vllm-cpu runtime in OpenShift AI](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/rhoai2-cpu-tests)
 - Create a custom vLLM custom runtime
 - Serving a model using the custom runtime and test it
+
+### [Serving a Model in RHOAI using modelcar](https://github.com/alexbarbosa1989/ai-playground/blob/main/rhoai-tests/serving-modelcar/REDAME.md)
+- Create OCI connection
+- Serve the model via Single model deployment
+- Test the served model
+
