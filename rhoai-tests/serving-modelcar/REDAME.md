@@ -17,12 +17,12 @@ That action create a new OpenShift namespace. For example if the data-scienc pro
 ### Serving the model
 - Navigate **Data science projects** > **dsc-test** > **Models** > **Single-model serving platform** > **Deploy model**
 
-- Fill the `Deploy model` form making sure you're selecting the **vLLM NVIDIA GPU ServingRuntime for KServe** provided by RHOAI and the [previously created Hardware Profile](https://github.com/alexbarbosa1989/ai-playground/blob/main/rhoai-tests/hardware-profile/README.md). The **Make depployed models available through an external route** checkbox should be mark if you want access the model outside the OpenShift cluster
+- Fill the `Deploy model` form making sure you're selecting the **vLLM NVIDIA GPU ServingRuntime for KServe** provided by RHOAI and the [previously created Hardware Profile](https://github.com/alexbarbosa1989/ai-playground/blob/main/rhoai-tests/hardware-profile/README.md). The **Make deployed models available through an external route** checkbox should be marked if you want access to the model outside the OpenShift cluster
 <img width="834" height="496" alt="deploy-single-model-vllm" src="https://github.com/user-attachments/assets/a66ae30c-1724-40e1-83f5-4d5073e0a83a" />
 
 <img width="841" height="427" alt="set-hw-profile-model-edit" src="https://github.com/user-attachments/assets/e1ff420e-9551-4b5b-8c33-ebfc33baeb71" />
 
-- Finish the model deployment and wait until model is served and running
+- Finish the model deployment and wait until the model is served and running
 <img width="1052" height="486" alt="finish-single-model-deployment" src="https://github.com/user-attachments/assets/03abc95e-cd51-4c44-be40-e9d5aee468f1" />
 
 ## Checking the Served Model
