@@ -2,6 +2,7 @@
 
 ### Create a data science project. Navigate **Data science projects** > **Create project**
 That action create a new OpenShift namespace. For example if the data-scienc project's name is `dsc-test`, it creates the `dsc-test` namespace
+
 <img width="857" height="264" alt="create-dsc-project" src="https://github.com/user-attachments/assets/1ae79f25-c87f-488b-94dc-5041d105ad7f" />
 
 ### Create an OCI connection
