@@ -24,7 +24,7 @@
 - Create an OpenShift project for Minio
 - Deploy minio and test the created resources
 
-### [Serving a Model in RHOAI using modelcar](https://github.com/alexbarbosa1989/ai-playground/blob/main/rhoai-tests/serving-modelcar/REDAME.md)
+### [Serving a Model in RHOAI using modelcar](https://github.com/alexbarbosa1989/ai-playground/blob/main/rhoai-tests/serving-modelcar/README.md)
 - Create an OCI connection referencing the model repository
 - Serve the model via Single model deployment
 - Test the served model
