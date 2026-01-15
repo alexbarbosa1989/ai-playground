@@ -16,7 +16,7 @@
 ## RHOAI tests
 
 ### [Enable GPU in the Openshift cluster and Hardware Profiles](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/hardware-profile)
-- Enable GPU in the Openshift Cluster
+- Enable GPU in the OpenShift Cluster
 - Enable Hardware profile
 - Create a Hardware profile
 
@@ -26,10 +26,10 @@
 
 ### [Serving models with custom vllm-cpu runtime in OpenShift AI](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/rhoai2-cpu-tests)
 - Create a custom vLLM custom runtime
-- Serving a model using the custom runtime and test it
+- Serving a model using the custom runtime and testing it
 
 ### [Serving a Model in RHOAI using modelcar](https://github.com/alexbarbosa1989/ai-playground/blob/main/rhoai-tests/serving-modelcar/REDAME.md)
-- Create OCI connection
+- Create an OCI connection referencing the model repository
 - Serve the model via Single model deployment
 - Test the served model
 
