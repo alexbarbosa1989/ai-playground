@@ -41,7 +41,8 @@ pip install -U "huggingface_hub"
 source myenv/bin/activate
 ~~~
 
-### Run vllm into a podman container
+### Run vllm into a podman container 
+**Mandatory:** Need a [HuggingFace](https://huggingface.co/) account and have an active [access token](https://huggingface.co/docs/hub/security-tokens).
 ~~~
 podman run -ti --rm --pull=newer \
 --user 0 --shm-size=0 --name vllm \
