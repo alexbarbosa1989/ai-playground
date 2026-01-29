@@ -85,7 +85,7 @@ $ pip install "cmake>=3.26" wheel packaging ninja "setuptools-scm>=8" numpy
 $ pip install -v -r requirements/cpu.txt --extra-index-url https://download.pytorch.org/whl/cpu
 $ podman build --security-opt label=disable -f docker/Dockerfile.cpu -t quay.io/abarbosa/vllm-nvidia:0.11.2 --shm-size=4g .
 ~~~
-Note: quay.io/abarbosa/vllm-nvidia:0.11.2 is already available to pull in public quay.io reposotory:
+Note: quay.io/abarbosa/vllm-nvidia:0.11.2 is already available to pull in public quay.io repository:
 ~~~
 podman pull quay.io/abarbosa/vllm-nvidia:0.11.2
 ~~~
