@@ -23,6 +23,10 @@ If get the following error, create a credentials values file with your current O
 ~~~
 Error: INSTALLATION FAILED: execution error at (s4/templates/secret.yaml:18:12): auth.username is required when auth.enabled=true
 ~~~
+Create a YAML file with your OpenShift credentials:
+~~~
+vi my-credentials.yaml
+~~~
 ~~~
 auth:
   enabled: true
