@@ -70,5 +70,6 @@ oc get route
 NAME   HOST/PORT                PATH   SERVICES   PORT     TERMINATION     WILDCARD
 s4     s4-s4.apps-my-ocp.testing          s4         web-ui   edge/Redirect   None
 ~~~
+<img width="1003" height="569" alt="s4-login-en" src="https://github.com/user-attachments/assets/5190149e-b414-45d2-93a9-984afabc91e9" />
 
-5. The access user/password are the same configured in `my-credentials.yaml` (step 2).
+### NOTE: The access user/password are the same configured in `my-credentials.yaml` (step 2).
