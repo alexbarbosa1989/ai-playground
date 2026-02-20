@@ -20,9 +20,9 @@
 - Enable Hardware profile
 - Create a Hardware profile
 
-### [Configure minio storage in the Openshift cluster](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/minio)
-- Create an OpenShift project for Minio
-- Deploy minio and test the created resources
+### [Configure S3 storage in the Openshift cluster](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/storage)
+- Procedure for [Minio deployment](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/storage/minio) 
+- Procedure for [S4 deployment](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/storage/s4)
 
 ### [Serving a Model in RHOAI using modelcar](https://github.com/alexbarbosa1989/ai-playground/blob/main/rhoai-tests/serving-modelcar/README.md)
 - Create an OCI connection referencing the model repository
