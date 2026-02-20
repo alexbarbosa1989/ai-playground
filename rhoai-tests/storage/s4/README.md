@@ -73,7 +73,7 @@ s4-7cb64f4bbc-cmjsm   1/1     Running   0          46s
 ~~~
 oc get route
 NAME   HOST/PORT                PATH   SERVICES   PORT     TERMINATION     WILDCARD
-s4     s4-s4.apps-my-ocp.testing          s4         web-ui   edge/Redirect   None
+s4     s4-s4.apps-crc.testing          s4         web-ui   edge/Redirect   None
 ~~~
 
 <img width="1003" height="569" alt="s4-login-en" src="https://github.com/user-attachments/assets/5190149e-b414-45d2-93a9-984afabc91e9" />
