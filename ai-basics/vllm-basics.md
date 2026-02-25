@@ -74,6 +74,25 @@ Expected output:
 {"id":"chatcmpl-8b29171c942b1065","object":"chat.completion","created":1766068536,"model":"Qwen/Qwen3-0.6B","choices":[{"index":0,"message":{"role":"assistant","content":"<think>\nOkay, the user is asking for the capital of France. I need to confirm the correct answer. France's capital is Paris. Let me make sure there's no other city that's commonly referred to as the capital. I think Paris is the official name, and it's a major city. No, I'm not mistaken. So the answer should be Paris.\n</think>\n\nThe capital of France is **Paris**.","refusal":null,"annotations":null,"audio":null,"function_call":null,"tool_calls":[],"reasoning":null,"reasoning_content":null},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null}],"service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":15,"total_tokens":102,"completion_tokens":87,"prompt_tokens_details":null},"prompt_logprobs":null,"prompt_token_ids":null,"kv_transfer_params":null}
 ~~~
 
+NOTE: If face the CUDA driver compatibility error https://github.com/vllm-project/vllm/issues/32373#issuecomment-3852247144 while loading vLLM:
+~~~
+(EngineCore_DP0 pid=170) ERROR 02-25 13:05:19 [core.py:946] RuntimeError: Unexpected error from cudaGetDeviceCount(). Did you run some cuda functions before calling NumCudaDevices() that might have already set an error? Error 803: system has unsupported display driver / cuda driver combination
+~~~
+Should add the env variable `LD_LIBRARY_PATH=/lib64:/usr/local/cuda/lib64`:
+~~~
+podman run -ti --rm --pull=newer \
+--user 0 --shm-size=0 --name vllm \
+--env "LD_LIBRARY_PATH=/lib64:/usr/local/cuda/lib64" \
+--env "HUGGING_FACE_HUB_TOKEN=$HF_TOKEN" \
+--env "HF_HUB_OFFLINE=0" \
+--replace -v ~/.cache/huggingface:/root/.cache/huggingface \
+--stop-signal=SIGKILL --device nvidia.com/gpu=all \
+--security-opt=label=disable --hooks-dir=/etc/containers/oci/hooks.d/ \
+-p 8000:8000 \
+vllm/vllm-openai:latest \
+--model Qwen/Qwen3-0.6B --max_model_len=4096
+~~~
+
 ## For CPU setup
 
 ### Build the custom image: 
