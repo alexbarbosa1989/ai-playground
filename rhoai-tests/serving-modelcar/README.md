@@ -88,8 +88,6 @@ curl -X POST "https://tinyllama-dsc-test.apps-crc.testing/v1/chat/completions" \
 ~~~
 Expected output:
 ~~~
-Warning: --trace overrides an earlier trace/verbose option
-Note: Unnecessary use of -X or --request, POST is already inferred.
 {"id":"chatcmpl-651e941e964942b8b1e53660e7329864","object":"chat.completion","created":1766422534,"model":"tinyllama","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of France is Paris, located in the Ile-de-France region.","refusal":null,"annotations":null,"audio":null,"function_call":null,"tool_calls":[],"reasoning_content":null},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null}],"service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":23,"total_tokens":42,"completion_tokens":19,"prompt_tokens_details":null},"prompt_logprobs":null,"prompt_token_ids":null,"kv_transfer_params":null}
 ~~~
 
