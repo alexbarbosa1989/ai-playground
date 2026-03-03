@@ -81,9 +81,7 @@ tinyllama   tinyllama-dsc-test.apps-crc.testing          tinyllama-predictor   h
 
 - Perform a curl request to chat with the model
 ~~~
-curl -v --connect-timeout 5 --max-time 30 \
-  --trace-time --trace debug.txt \
-  -X POST "https://tinyllama-dsc-test.apps-crc.testing/v1/chat/completions" \
+curl -X POST "https://tinyllama-dsc-test.apps-crc.testing/v1/chat/completions" \
   -H "Content-Type: application/json"  \
   --data '{"model": "tinyllama","messages": [{"role": "user","content": "What is the capital of France?"}]}' \
   --insecure
