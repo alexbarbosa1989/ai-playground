@@ -94,7 +94,7 @@ In this case, a `Llama 3 model` was used with the following values:
 
 <img width="637" height="556" alt="llama3-summary" src="https://github.com/user-attachments/assets/f7bf4829-48f5-4fd1-b5eb-84b3d153561b" />
 
-
+Check the served model configurations:
 ~~~
 oc get InferenceService -n demo-llm
 ~~~
