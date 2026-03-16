@@ -65,7 +65,7 @@ sh-4.4$
 3. Serve a model
 Follow the same procedure from [Serving modelcar](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/serving-modelcar) example, but instead of deploying the model in `dsc-test` namespace, must created in `demo-llm`.
 
-In this case was used a `Llama 3 model with the following values:
+In this case was used a `Llama 3 model` with the following values:
 
 | Field                          | Value                                                |
 |--------------------------------|------------------------------------------------------|
@@ -91,8 +91,9 @@ In this case was used a `Llama 3 model with the following values:
 
 **Important:** In the deployment configuration, check the **Add as AI asset endpoint** box
 
+<img width="637" height="556" alt="llama3-summary" src="https://github.com/user-attachments/assets/f7bf4829-48f5-4fd1-b5eb-84b3d153561b" />
 
-**TODO:**[here-screenshots]
+
 ~~~
 oc get InferenceService -n demo-llm
 ~~~
