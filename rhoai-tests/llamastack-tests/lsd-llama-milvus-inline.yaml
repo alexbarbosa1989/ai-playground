@@ -1,0 +1,98 @@
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+  name: lsd-llama-milvus-inline
+spec:
+  replicas: 1
+  server:
+    containerSpec:
+      resources:
+        requests:
+          cpu: "250m"
+          memory: "500Mi"
+        limits:
+          cpu: 4
+          memory: "12Gi"
+      env:
+        # PostgreSQL metadata store (required in {productname-short} 3.2)
+        - name: POSTGRES_HOST
+          value: postgresql.demo-llm.svc.cluster.local # Replace with your PostgreSQL service hostname
+        - name: POSTGRES_PORT
+          value: "5432" # Replace with your PostgreSQL service port if different
+        - name: POSTGRES_DB
+          value: llamastack # Replace with your PostgreSQL database name
+        - name: POSTGRES_USER
+          value: <dbuser> # Replace with your PostgreSQL username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgresql
+              key: database-password
+
+        # Remote LLM configuration
+        - name: INFERENCE_MODEL
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-secret
+              key: INFERENCE_MODEL
+        - name: VLLM_URL
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-secret
+              key: VLLM_URL
+        - name: VLLM_TLS_VERIFY
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-secret
+              key: VLLM_TLS_VERIFY
+        - name: VLLM_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-secret
+              key: VLLM_API_TOKEN
+        - name: VLLM_MAX_TOKENS
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-secret
+              key: VLLM_MAX_TOKENS
+
+        # Remote embedding configuration
+        - name: EMBEDDING_MODEL
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-secret
+              key: EMBEDDING_MODEL
+        - name: EMBEDDING_PROVIDER_MODEL_ID
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-secret
+              key: EMBEDDING_PROVIDER_MODEL_ID
+        - name: VLLM_EMBEDDING_URL
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-secret
+              key: VLLM_EMBEDDING_URL
+        - name: VLLM_EMBEDDING_TLS_VERIFY
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-secret
+              key: VLLM_EMBEDDING_TLS_VERIFY
+        - name: VLLM_EMBEDDING_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-secret
+              key: VLLM_EMBEDDING_API_TOKEN
+        - name: VLLM_EMBEDDING_MAX_TOKENS
+          valueFrom:
+            secretKeyRef:
+              name: llama-stack-secret
+              key: VLLM_EMBEDDING_MAX_TOKENS
+
+        - name: FMS_ORCHESTRATOR_URL
+          value: "http://localhost"
+      name: llama-stack
+      port: 8321
+    distribution:
+      name: rh-dev
+    storage:
+      size: 5Gi
