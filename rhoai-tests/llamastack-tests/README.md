@@ -84,8 +84,8 @@ In this case, a `Llama 3 model` was used with the following values:
 | External route                 | Yes                                                  |
 | Token authentication           | No                                                   |
 | Additional runtime arguments   | 3                                                    |
-|                                | --max-model-len=16000,                               |
-|                                | --enable-auto-tool-choice,                           |
+|                                | --max-model-len=16000                                |
+|                                | --enable-auto-tool-choice                            |
 |                                | --tool-call-parser=llama3_json                       |
 | Deployment strategy            | Rolling update                                       |
 
