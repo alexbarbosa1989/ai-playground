@@ -13,6 +13,10 @@
 ### [RAIIS agent local usage](https://github.com/alexbarbosa1989/rhaiis-langchain)
 - Running a basic agent on the local machine serving the model with RHAIIS
 
+### Serving Red Hat Inference Server in Openshift (Out of Openshift AI)
+- [Serving a model downloaded fron HuggingFace](https://github.com/alexbarbosa1989/rhai-helm/tree/main)
+- [Serving a model with an OCI modelcar image located in an image repository](https://github.com/alexbarbosa1989/rhai-helm/tree/modelcar)
+
 ## RHOAI tests
 
 ### [Enable GPU in the Openshift cluster and Hardware Profiles](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/hardware-profile)
