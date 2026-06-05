@@ -67,27 +67,27 @@ Follow the same procedure from [Serving modelcar](https://github.com/alexbarbosa
 
 In this case, a `Llama 3 model` was used with the following values:
 
-| Field                          | Value                                                |
-|--------------------------------|------------------------------------------------------|
-| Conection URI                  | oci://quay.io/rhoai-genaiops/llama32-3b-instruct-fp8 |
-| Model type                     | Generative AI model (Example, LLM)                   |
-| Model location                 | URI                                                  |
-| Connection name                | llama3                                               |
-| Project                        | demo-llm                                             |
-| Model deployment name          | llama3                                               |
-| Hardware profile               | local-gpu                                            |
-| Model format                   | vLLM                                                 |
-| Serving runtime                | vLLM NVIDIA GPU ServingRuntime for KServe            |
-| Replicas                       | 1                                                    |
-| AI asset endpoint              | Yes                                                  |
-| Use case                       | llama3-tests                                         |
-| External route                 | Yes                                                  |
-| Token authentication           | No                                                   |
-| Additional runtime arguments   | 3                                                    |
-|                                | --max-model-len=16000                                |
-|                                | --enable-auto-tool-choice                            |
-|                                | --tool-call-parser=llama3_json                       |
-| Deployment strategy            | Rolling update                                       |
+| Field                          | Value                                                       |
+|--------------------------------|-------------------------------------------------------------|
+| Conection URI                  | oci://quay.io/rhoai-genaiops/llama32-3b-instruct-fp8:latest |
+| Model type                     | Generative AI model (Example, LLM)                          |
+| Model location                 | URI                                                         |
+| Connection name                | llama3                                                      |
+| Project                        | demo-llm                                                    |
+| Model deployment name          | llama3                                                      |
+| Hardware profile               | local-gpu                                                   |
+| Model format                   | vLLM                                                        |
+| Serving runtime                | vLLM NVIDIA GPU ServingRuntime for KServe                   |
+| Replicas                       | 1                                                           |
+| AI asset endpoint              | Yes                                                         |
+| Use case                       | llama3-tests                                                |
+| External route                 | Yes                                                         |
+| Token authentication           | No                                                          |
+| Additional runtime arguments   | 3                                                           |
+|                                | --max-model-len=16000                                       |
+|                                | --enable-auto-tool-choice                                   |
+|                                | --tool-call-parser=llama3_json                              |
+| Deployment strategy            | Rolling update                                              |
 
 **Important:** In the deployment configuration, set the **Additional runtime arguments** and check the **Add as AI asset endpoint** box
 <img width="777" height="193" alt="llama3-args" src="https://github.com/user-attachments/assets/ce8636a7-879c-42b3-9b00-18001fe2c580" />
