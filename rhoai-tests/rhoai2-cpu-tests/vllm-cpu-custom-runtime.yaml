@@ -15,6 +15,7 @@ spec:
     prometheus.io/port: "8080"
   containers:
     - args:
+        - --gpu-memory-utilization=0.5
         - --port=8080
         - --model=/mnt/models
         - --served-model-name={{.Name}}
@@ -27,7 +28,7 @@ spec:
           value: /tmp/hf_home
         - name: VLLM_CACHE_ROOT
           value: /tmp/cache
-      image: vllm/vllm-openai-cpu:v0.22.1
+      image: quay.io/abarbosa/vllm-cpu:0.22.1
       name: kserve-container
       ports:
         - containerPort: 8080
