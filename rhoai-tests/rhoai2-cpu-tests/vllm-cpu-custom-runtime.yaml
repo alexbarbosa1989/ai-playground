@@ -3,7 +3,7 @@ kind: ServingRuntime
 metadata:
   annotations:
     opendatahub.io/recommended-accelerators: ""
-    opendatahub.io/runtime-version: v0.11.2
+    opendatahub.io/runtime-version: v0.22.1
     openshift.io/display-name: vLLM custom CPU ServingRuntime for KServe
     opendatahub.io/apiProtocol: REST
   labels:
@@ -27,7 +27,7 @@ spec:
           value: /tmp/hf_home
         - name: VLLM_CACHE_ROOT
           value: /tmp/cache
-      image: quay.io/abarbosa/vllm-cpu:0.11.2
+      image: vllm/vllm-openai-cpu:v0.22.1
       name: kserve-container
       ports:
         - containerPort: 8080
