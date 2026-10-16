@@ -21,8 +21,9 @@ a Gateway, optional request authentication, and GPU-aware scheduling.
 - **MetalLB** (non-cloud platforms only, e.g. CRC/bare metal) so the Gateway gets a real
   LoadBalancer address. Skipped automatically on AWS/Azure/GCP/IBMCloud.
 - A model namespace (`llm-d-models`) labeled for Gateway route binding.
-- An example `LLMInferenceService` (Qwen3-8B-FP8-dynamic from Hugging Face) and an optional
-  scoped ServiceAccount/Role/RoleBinding for calling it.
+- An example `LLMInferenceService` (Qwen3-8B-FP8-dynamic from Hugging Face). A scoped
+  ServiceAccount/Role/RoleBinding for calling it is available too, but only created if you
+  pass `--create-rbac-example` — see [Testing a deployed model](#testing-a-deployed-model).
 
 ## Prerequisites
 
@@ -43,10 +44,10 @@ a Gateway, optional request authentication, and GPU-aware scheduling.
 ./setup-llm-d.sh
 
 # 2. Deploy the example model
-./deploy-example-workload.sh --create-rbac-example
+./deploy-example-workload.sh
 
-# 3. Call it
-TOKEN=$(oc create token qwen3-8b-caller -n llm-d-models --duration=1h)
+# 3. Call it (your own user token — fine for a quick smoke test)
+TOKEN=$(oc whoami -t)
 curl -sk -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   https://inference.apps-crc.testing/llm-d-models/qwen3-8b/v1/chat/completions \
   -d '{"model":"RedHatAI/Qwen3-8B-FP8-dynamic","messages":[{"role":"user","content":"Hello"}],"max_tokens":50}'
@@ -64,7 +65,7 @@ To serve the same Qwen3 model with a different vLLM build instead of the control
 runtime image — for example, a Red Hat early-access image — pass `--image`:
 
 ```bash
-./deploy-example-workload.sh --create-rbac-example \
+./deploy-example-workload.sh \
   --image registry.redhat.io/rhaii-early-access/vllm-cuda-rhel9:3.5.0-ea.1-1780065492
 ```
 
@@ -193,8 +194,15 @@ above. Override or add to it with repeated `--vllm-arg` flags on `deploy-example
 
 ## Testing a deployed model
 
+`--create-rbac-example` is **optional** — it's not required for a deployment to work, only
+for how you authenticate against it when auth is enabled:
+
 ```bash
-# Scoped token (requires --create-rbac-example at deploy time)
+# Default: your own user token (fine for a quick smoke test)
+TOKEN=$(oc whoami -t)
+
+# Or, if you deployed with --create-rbac-example: a token scoped to only this
+# LLMInferenceService (the docs' "recommended" least-privilege pattern)
 TOKEN=$(oc create token qwen3-8b-caller -n llm-d-models --duration=1h)
 
 curl -sk -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
@@ -202,6 +210,8 @@ curl -sk -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   -d '{"model":"RedHatAI/Qwen3-8B-FP8-dynamic","messages":[{"role":"user","content":"Hello"}],"max_tokens":50}'
 ```
 
+- If auth is disabled (`--skip-auth` at setup, or `--no-auth` at deploy), drop the
+  `Authorization` header entirely — no token is needed either way.
 - Omit the `Authorization` header to confirm Authorino actually rejects unauthenticated
   requests (expect `401`/`403`) when auth is enabled.
 - `oc get llminferenceservice <name> -n <namespace>` for overall `Ready` status.
