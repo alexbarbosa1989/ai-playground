@@ -1,0 +1,16 @@
+# Templated — setup-llm-d.sh substitutes LWS_PACKAGE_NAME_PLACEHOLDER with the package name
+# discovered live from `oc get packagemanifest` (see install_lws_operator() and
+# lib/common.sh's discover_olm_package). Channel stable-v1.0 is confirmed from Red Hat's OCP
+# 4.21 "AI workloads" docs (Leader Worker Set Operator chapter) at the time this was written;
+# re-check that chapter if this subscription stops resolving a CSV.
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: LWS_PACKAGE_NAME_PLACEHOLDER
+  namespace: openshift-lws-operator
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Automatic
+  name: LWS_PACKAGE_NAME_PLACEHOLDER
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace

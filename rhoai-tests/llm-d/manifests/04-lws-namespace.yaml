@@ -1,0 +1,23 @@
+# Recommended namespace per Red Hat's OCP "AI workloads" docs (Leader Worker Set Operator
+# chapter): openshift-lws-operator. The operator's package `name` field is discovered at
+# runtime (see lib/common.sh's discover_olm_package + setup-llm-d.sh's install_lws_operator)
+# rather than hardcoded here — docs.redhat.com was unreachable (503/timeout) for the exact
+# install-procedure page while this project was written, so the Subscription itself is
+# generated from a template (05-lws-subscription.yaml.tmpl), not applied directly from a
+# static file like this namespace is.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-lws-operator
+  labels:
+    openshift.io/cluster-monitoring: "true"
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: openshift-lws-operator
+  namespace: openshift-lws-operator
+spec:
+  targetNamespaces:
+  - openshift-lws-operator
+  upgradeStrategy: Default

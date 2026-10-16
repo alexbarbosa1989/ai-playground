@@ -1,0 +1,23 @@
+# Templated — setup-llm-d.sh substitutes CLUSTER_DOMAIN_PLACEHOLDER before applying.
+# Non-cloud platforms only (None/BareMetal/OpenStack/VSphere/...). On cloud platforms
+# (AWS/Azure/GCP/IBMCloud) the openshift-default GatewayClass provisions a real LoadBalancer
+# Service directly and no Route is needed.
+#
+# passthrough (not reencrypt/edge) because the Gateway itself terminates TLS — the Route
+# just forwards the raw TLS bytes through to the Gateway's Service.
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: openshift-ai-inference-https
+  namespace: openshift-ingress
+spec:
+  host: inference.CLUSTER_DOMAIN_PLACEHOLDER
+  to:
+    kind: Service
+    name: openshift-ai-inference-openshift-default
+    weight: 100
+  port:
+    targetPort: https
+  tls:
+    termination: passthrough
+    insecureEdgeTerminationPolicy: Redirect

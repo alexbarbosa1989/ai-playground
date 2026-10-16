@@ -1,0 +1,13 @@
+# Registers OpenShift's own built-in Gateway API implementation as a GatewayClass.
+# RHOAI's llm-d docs only say "your cluster administrator has created a GatewayClass and a
+# Gateway named openshift-ai-inference" without naming the GatewayClass itself — this reuses
+# the same controllerName the sibling maas-rhoai project already validated live
+# (openshift.io/gateway-controller/v1, OCP's native Gateway API controller, not an
+# Istio/OSSM-specific one — consistent with the llm-d docs' own prerequisite that OpenShift
+# Service Mesh v2 must NOT be installed).
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: openshift-default
+spec:
+  controllerName: "openshift.io/gateway-controller/v1"

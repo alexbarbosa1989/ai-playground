@@ -1,0 +1,24 @@
+# Templated — setup-llm-d.sh substitutes METALLB_IP_RANGE_PLACEHOLDER before applying.
+# Default range derivation: first node's own InternalIP + 1 on the last octet, a
+# single-address pool — same formula the sibling maas-rhoai project uses. Override with
+# --metallb-ip-range / METALLB_IP_RANGE on a more complex network.
+#
+# L2Advertisement (ARP-based), not BGP — the right default for a cluster with no existing
+# BGP peering infrastructure (CRC, most on-prem/SNO setups).
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: llm-d-gateway-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - METALLB_IP_RANGE_PLACEHOLDER
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: llm-d-gateway-pool
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - llm-d-gateway-pool

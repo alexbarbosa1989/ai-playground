@@ -1,0 +1,24 @@
+# Re-applies the authorino-authorino-authorization Service (created by the RHCL/Kuadrant
+# operator once the Kuadrant CR goes Ready) with a service.beta.openshift.io/serving-cert-
+# secret-name annotation added, so OpenShift's service-ca operator mints authorino-server-
+# cert automatically — this is what lets the Authorino CR below turn on TLS.
+apiVersion: v1
+kind: Service
+metadata:
+  name: authorino-authorino-authorization
+  namespace: kuadrant-system
+  annotations:
+    service.beta.openshift.io/serving-cert-secret-name: authorino-server-cert
+spec:
+  ports:
+    - name: grpc
+      port: 50051
+      protocol: TCP
+      targetPort: 50051
+    - name: http
+      port: 5001
+      protocol: TCP
+      targetPort: 5001
+  selector:
+    authorino-resource: authorino
+  type: ClusterIP

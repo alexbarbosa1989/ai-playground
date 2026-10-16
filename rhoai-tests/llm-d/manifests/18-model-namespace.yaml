@@ -1,0 +1,13 @@
+# Namespace where llm-d models are deployed.
+# The label opendatahub.io/dashboard: "true" makes it visible in the RHOAI dashboard.
+# The label llm-d.opendatahub.io/gateway-access: "true" is required for LLMInferenceService
+# HTTPRoutes here to attach to the openshift-ai-inference Gateway (see
+# 13-gateway.yaml.tmpl's allowedRoutes.namespaces.selector).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: llm-d-models
+  labels:
+    opendatahub.io/dashboard: "true"
+    kubernetes.io/metadata.name: llm-d-models
+    llm-d.opendatahub.io/gateway-access: "true"

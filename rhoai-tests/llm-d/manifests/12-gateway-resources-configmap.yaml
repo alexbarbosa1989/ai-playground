@@ -1,0 +1,24 @@
+# Referenced by the Gateway's spec.infrastructure.parametersRef. Raises the istio-proxy
+# container's memory limit from the GatewayClass controller's 1Gi default to 2Gi — without
+# this, the gateway pod can OOMKill once Kuadrant's Wasm extensions (auth enforcement) load
+# onto it. Harmless/unused if you run with --skip-auth (no Kuadrant Wasm filter ever loads),
+# but kept unconditional for simplicity — same approach the sibling maas-rhoai project uses.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: llm-d-gateway-options
+  namespace: openshift-ingress
+data:
+  deployment: |
+    spec:
+      template:
+        spec:
+          containers:
+          - name: istio-proxy
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: "2"
+                memory: 2Gi

@@ -1,0 +1,18 @@
+# Red Hat Connectivity Link (RHCL) provides Kuadrant/Authorino, which llm-d uses for the
+# Gateway's AuthPolicy (per-token/per-request auth enforcement at the Gateway, independent
+# of any individual LLMInferenceService). Only needed if you intend to run with
+# security.opendatahub.io/enable-auth: "true" (the recommended, production setting) — skip
+# this entire install path with setup-llm-d.sh --skip-auth for a dev/test cluster where
+# every LLMInferenceService carries enable-auth: "false" instead.
+# RHCL only supports AllNamespaces install mode (openshift-operators).
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: rhcl-operator
+  namespace: openshift-operators
+spec:
+  channel: stable
+  installPlanApproval: Automatic
+  name: rhcl-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace

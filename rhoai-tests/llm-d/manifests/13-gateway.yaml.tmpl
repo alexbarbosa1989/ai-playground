@@ -1,0 +1,47 @@
+# Templated — setup-llm-d.sh substitutes CLUSTER_DOMAIN_PLACEHOLDER and CERT_NAME_PLACEHOLDER
+# before applying. Do not apply this file directly with oc apply.
+#
+# Gateway name "openshift-ai-inference" in namespace "openshift-ingress" are REQUIRED literal
+# values per RHOAI 3.4's llm-d docs (Ch 1.1 prerequisite) — LLMInferenceService's router
+# section and the docs' own troubleshooting commands (`oc get gateway openshift-ai-inference
+# -n openshift-ingress`) both assume this exact name/namespace.
+#
+# TLS reuses the cluster's existing default ingress certificate (CERT_NAME, resolved from the
+# IngressController) rather than minting a new one.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: openshift-ai-inference
+  namespace: openshift-ingress
+  annotations:
+    opendatahub.io/managed: "false"
+    security.opendatahub.io/authorino-tls-bootstrap: "true"
+spec:
+  gatewayClassName: openshift-default
+  infrastructure:
+    parametersRef:
+      group: ""
+      kind: ConfigMap
+      name: llm-d-gateway-options
+  listeners:
+    # HTTPS only, deliberately — mirrors a confirmed issue in the sibling maas-rhoai project
+    # (see its 07-gateway.yaml.tmpl / KCS-GATEWAY-DUAL-LISTENER-ENDPOINT-SCHEME.md): adding a
+    # second HTTP listener on this same hostname causes LLMInferenceService's status-address
+    # reconciliation to produce a duplicate-named address entry, and whatever collapses that
+    # into status.url picks the http:// one even though the route is actually TLS-only.
+    - name: https
+      hostname: inference.CLUSTER_DOMAIN_PLACEHOLDER
+      port: 443
+      protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              llm-d.opendatahub.io/gateway-access: "true"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: CERT_NAME_PLACEHOLDER

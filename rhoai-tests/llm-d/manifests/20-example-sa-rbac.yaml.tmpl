@@ -1,0 +1,37 @@
+# Templated — deploy-example-workload.sh substitutes SERVICE_NAME_PLACEHOLDER and
+# MODEL_NS_PLACEHOLDER before applying. Only applied when auth is enabled
+# (security.opendatahub.io/enable-auth: "true" on the LLMInferenceService) and the caller
+# asked for the RBAC-scoped token path instead of a raw `oc whoami -t` token — matches RHOAI
+# 3.4's llm-d docs Ch 4 "recommended" authentication method: a dedicated ServiceAccount
+# scoped (via resourceNames) to exactly one LLMInferenceService, rather than handing out a
+# token with broader cluster access.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: SERVICE_NAME_PLACEHOLDER-caller
+  namespace: MODEL_NS_PLACEHOLDER
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: SERVICE_NAME_PLACEHOLDER-caller
+  namespace: MODEL_NS_PLACEHOLDER
+rules:
+  - apiGroups: ["serving.kserve.io"]
+    resources: ["llminferenceservices"]
+    resourceNames: ["SERVICE_NAME_PLACEHOLDER"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: SERVICE_NAME_PLACEHOLDER-caller
+  namespace: MODEL_NS_PLACEHOLDER
+subjects:
+  - kind: ServiceAccount
+    name: SERVICE_NAME_PLACEHOLDER-caller
+    namespace: MODEL_NS_PLACEHOLDER
+roleRef:
+  kind: Role
+  name: SERVICE_NAME_PLACEHOLDER-caller
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,26 @@
+# Matches RHOAI 3.4's "Configuring authentication for Distributed Inference with llm-d
+# using Red Hat Connectivity Link" chapter verbatim: clusterWide: true (unlike the sibling
+# maas-rhoai project, which lets Kuadrant auto-provision a namespace-scoped Authorino and
+# never creates this CR explicitly) — llm-d models can land in any namespace, not just one
+# fixed MaaS tenant namespace, so the Gateway's AuthPolicy needs an Authorino instance that
+# watches the whole cluster, not just kuadrant-system.
+#
+# If this CR already exists (e.g. a prior namespace-scoped Authorino from some other
+# workload on this cluster), setup-llm-d.sh patches clusterWide/TLS onto it with a merge
+# patch instead of re-applying this full manifest, to avoid clobbering unrelated fields.
+apiVersion: operator.authorino.kuadrant.io/v1beta1
+kind: Authorino
+metadata:
+  name: authorino
+  namespace: kuadrant-system
+spec:
+  replicas: 1
+  clusterWide: true
+  listener:
+    tls:
+      enabled: true
+      certSecretRef:
+        name: authorino-server-cert
+  oidcServer:
+    tls:
+      enabled: false

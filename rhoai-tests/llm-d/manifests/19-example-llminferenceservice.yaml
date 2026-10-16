@@ -1,0 +1,66 @@
+# Example LLMInferenceService (serving.kserve.io/v1alpha2) — plain llm-d, no MaaS.
+#
+# Uses RHOAI 3.4's own doc example model (Qwen3-8B-FP8-dynamic from Hugging Face) so this
+# works out of the box against the documented procedure. v1alpha2 is used throughout this
+# project (not v1alpha1, which most of the 3.4 doc's examples show) because it's the schema
+# already confirmed live against a real cluster in the sibling maas-rhoai project, and the
+# 3.4 doc itself uses v1alpha2 for its own vLLM-args and autoscaling examples — the CRD
+# appears to serve both versions, so standardising on the newer one is the safer choice.
+#
+# Prerequisites:
+#   - GPU node with FP8 support (NVIDIA H100/H200 recommended) for this specific model;
+#     swap spec.model.uri/name for a model that fits your actual hardware
+#   - Global pull secret / HF token secret if the model is gated on Hugging Face (this one,
+#     RedHatAI/Qwen3-8B-FP8-dynamic, is public)
+#   - Run setup-llm-d.sh first (Gateway, and optionally RHCL/Kuadrant/Authorino for auth)
+#
+# Before applying:
+#   - Set opendatahub.io/hardware-profile-name to your cluster's GPU profile
+#     (oc get hardwareprofile -n redhat-ods-applications) — informational only, scheduling
+#     is driven by spec.template.containers[].resources
+#   - deploy-example-workload.sh sets security.opendatahub.io/enable-auth based on whether
+#     Kuadrant/Authorino were installed by setup-llm-d.sh (or your own --enable-auth /
+#     --no-auth flag) — the placeholder below is overwritten by sed, don't rely on the
+#     literal value if applying this file directly.
+---
+apiVersion: serving.kserve.io/v1alpha2
+kind: LLMInferenceService
+metadata:
+  name: qwen3-8b
+  namespace: llm-d-models
+  annotations:
+    opendatahub.io/hardware-profile-name: local-gpu   # replace with your GPU profile name
+    opendatahub.io/hardware-profile-namespace: redhat-ods-applications
+    opendatahub.io/model-type: generative
+    security.opendatahub.io/enable-auth: "ENABLE_AUTH_PLACEHOLDER"
+  labels:
+    opendatahub.io/dashboard: "true"
+    opendatahub.io/genai-asset: "true"
+spec:
+  model:
+    name: RedHatAI/Qwen3-8B-FP8-dynamic
+    uri: hf://RedHatAI/Qwen3-8B-FP8-dynamic
+  replicas: 1
+  router:
+    gateway:
+      refs:
+      - name: openshift-ai-inference
+        namespace: openshift-ingress
+    route: {}
+    scheduler: {}
+  template:
+    containers:
+    - name: main
+      args:
+        - --max-model-len=16000
+      resources:
+        # Matches manifests/21-example-gpu-hardwareprofile.yaml's "local-gpu" profile exactly:
+        # requests = each identifier's defaultCount, limits = each identifier's maxCount.
+        requests:
+          cpu: "1"
+          memory: 1Gi
+          nvidia.com/gpu: "1"
+        limits:
+          cpu: "4"
+          memory: 16Gi
+          nvidia.com/gpu: "1"
