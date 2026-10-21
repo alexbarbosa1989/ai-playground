@@ -1,0 +1,30 @@
+# Verbatim from the RHOAI 3.5 doc, Ch 6.3 "Monitor per-version inference metrics during
+# controlled deployment" — adds an `llm_isvc_name` label (from the pod's own
+# app.kubernetes.io/name) so PromQL queries can filter/compare metrics per
+# LLMInferenceService version during a canary/controlled deployment.
+#
+# setup-observability.sh only applies this when the controller-created PodMonitor
+# (kserve-llm-isvc-vllm-engine*) does NOT already carry this relabeling rule — confirmed
+# live on RHOAI 3.5.1 that it already does, making this manifest redundant (and wasteful:
+# it would double-scrape the same pods under a second PodMonitor) on that version. Kept
+# here, applied conditionally, for older/future RHOAI versions where the controller may not
+# inject it automatically.
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: llmisvc-vllm
+  namespace: MODEL_NS_PLACEHOLDER
+spec:
+  selector:
+    matchLabels:
+      kserve.io/component: workload
+  podMetricsEndpoints:
+    - portNumber: 8000
+      path: /metrics
+      interval: 10s
+      params:
+        format:
+          - prometheus
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+          targetLabel: llm_isvc_name

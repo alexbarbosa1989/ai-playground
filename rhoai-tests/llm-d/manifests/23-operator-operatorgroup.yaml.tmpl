@@ -1,0 +1,9 @@
+# AllNamespaces install mode (no targetNamespaces) — all three operators this script installs
+# (COO, OpenTelemetry, Tempo) are cluster-scoped observability operators that watch resources
+# across namespaces, not just their own.
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: NS_PLACEHOLDER
+  namespace: NS_PLACEHOLDER
+spec: {}

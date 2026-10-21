@@ -1,0 +1,9 @@
+# Generic Namespace template, reused for every AllNamespaces OLM operator this script
+# installs (COO, Red Hat build of OpenTelemetry, Tempo) — all three follow the identical
+# shape, so one template is substituted 3 times rather than keeping 3 near-duplicate files.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: NS_PLACEHOLDER
+  labels:
+    openshift.io/cluster-monitoring: "true"

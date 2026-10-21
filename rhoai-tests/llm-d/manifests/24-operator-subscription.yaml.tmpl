@@ -1,0 +1,23 @@
+# Generic Subscription template, reused for COO, Red Hat build of OpenTelemetry, and Tempo.
+# Package name + channel are discovered live via `discover_olm_package` / the
+# packagemanifest's own defaultChannel, not hardcoded — confirmed present on the cluster this
+# project was developed against as: cluster-observability-operator (channel stable),
+# opentelemetry-product (channel stable), tempo-product (channel stable) — but discovered
+# live anyway in case a different cluster's catalog names or channels them differently.
+#
+# CONFIRMED LIVE: the installed CSV's name does NOT always match the Subscription package
+# name — e.g. package "opentelemetry-product" installs CSV "opentelemetry-operator.vX.Y.Z",
+# and package "tempo-product" installs CSV "tempo-operator.vX.Y.Z". The script's CSV wait
+# step uses a separate, explicit match pattern per operator for this reason — don't assume
+# the two are the same string.
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: PKG_PLACEHOLDER
+  namespace: NS_PLACEHOLDER
+spec:
+  channel: CHANNEL_PLACEHOLDER
+  installPlanApproval: Automatic
+  name: PKG_PLACEHOLDER
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
