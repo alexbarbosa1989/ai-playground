@@ -78,6 +78,37 @@ Re-running the command above against an already-deployed service updates it in p
 (`llminferenceservice.serving.kserve.io/qwen3-8b configured`) rather than requiring a
 teardown/redeploy cycle.
 
+### Optional: configure observability
+
+```bash
+./setup-observability.sh
+```
+
+Sets up metrics + the built-in "LLM Traffic" / "LLM Performance" / "LLM Utilization"
+dashboards (OpenShift AI dashboard → **Observe & monitor** → **Dashboard** → **Models** tab →
+select your model) for the deployed model(s). Confirmed live on this project's own CRC
+cluster — not just transcribed from the docs:
+
+- Enables User Workload Monitoring (off by default; without it the PodMonitor/ServiceMonitor
+  the KServe controller auto-creates per `LLMInferenceService` scrape nothing).
+- Installs the Cluster Observability Operator, Red Hat build of OpenTelemetry, and Tempo — all
+  three, even though tracing is never configured, because RHOAI 3.5's `Monitoring` platform
+  resource hard-fails its reconciliation precondition without OpenTelemetry/Tempo present.
+- Patches the `DSCInitialization`'s `spec.monitoring` (`managementState: Managed` +
+  `metrics.storage.size`/`retention`) — the actual missing trigger for the Perses dashboard
+  server to come up. Doc Ch 17.4's own prerequisite just says "enable the observability
+  dashboard in the UI" and links out to a guide that doesn't fully spell this out.
+- Smoke-tests that `vllm:*` and `llm_d_epp_*` metrics are actually flowing (via the in-cluster
+  Thanos querier, authenticated with your own `oc` token) — not just that the right objects
+  exist.
+- `--download-grafana-dashboards` additionally fetches the community Grafana dashboard JSONs
+  into `./grafana-dashboards/` (requires your own separately-deployed Grafana to import into —
+  not installed by this script).
+
+Not required for a model to work — purely for metrics/dashboards. See `./setup-observability.sh
+--help` for all flags, and the script's own header comment for the full list of what was
+confirmed live versus what the upstream docs say.
+
 ## Scripts
 
 ### `setup-llm-d.sh`
@@ -150,17 +181,53 @@ Environment variables mirror the flags: `MODEL_URI`, `MODEL_NAME`, `SERVICE_NAME
 ### `teardown-llm-d.sh`
 
 ```
-./teardown-llm-d.sh [--full] [--yes]
+./teardown-llm-d.sh [--full] [--remove-observability] [--yes]
 ```
 
-Default (no `--full`): removes the example `LLMInferenceService` + model namespace, reverts
-Authorino's `clusterWide`/TLS config (Kuadrant CR deleted, which cascades the Authorino CR
-with it), and deletes the Gateway/Route/ConfigMap. Operators (cert-manager, LWS, RHCL),
-MetalLB, the GatewayClass, and `kserve`'s management state are all **left in place**, since
-they may be shared by other workloads on the cluster.
+Default (no flags): removes the example `LLMInferenceService` + model namespace (which also
+takes any PodMonitor/ServiceMonitor living in it, including the Ch 6.3 canary PodMonitor
+`setup-observability.sh` may have applied, with it), reverts Authorino's `clusterWide`/TLS
+config (Kuadrant CR deleted, which cascades the Authorino CR with it), and deletes the
+Gateway/Route/ConfigMap. Operators (cert-manager, LWS, RHCL, COO/OpenTelemetry/Tempo),
+MetalLB, the GatewayClass, `kserve`'s management state, User Workload Monitoring, and the
+DSCI's monitoring config are all **left in place**, since they may be shared by other
+workloads on the cluster.
 
-`--full` additionally uninstalls those operators, MetalLB, and the GatewayClass. `--yes` skips
-the confirmation prompt.
+`--full` additionally uninstalls cert-manager/LWS/RHCL, MetalLB, and the GatewayClass.
+`--remove-observability` additionally reverts the DSCI's `monitoring.managementState` to
+`Removed` and uninstalls COO/OpenTelemetry/Tempo (independent of `--full` — pass both if you
+ran `setup-observability.sh` and want it fully undone). `--yes` skips the confirmation prompt.
+
+### `setup-observability.sh` (optional)
+
+Configures metrics collection + the built-in Perses dashboards for Distributed Inference with
+llm-d, per RHOAI 3.5's doc Chapter 17 ("Monitor llm-d deployments") + Chapter 6.3 (per-version
+canary metrics) + the Managing OpenShift AI guide's Chapter 12 (observability stack). Run after
+`setup-llm-d.sh` + `deploy-example-workload.sh`.
+
+```
+./setup-observability.sh [OPTIONS]
+
+  --skip-uwm                      Skip enabling User Workload Monitoring.
+  --skip-dashboards                Skip installing COO/OpenTelemetry/Tempo and patching the
+                                    DSCI's monitoring stack.
+  --download-grafana-dashboards   Download the community Grafana dashboard JSONs (Ch 17.7)
+                                   into ./grafana-dashboards/.
+  --help                          Show usage
+```
+
+Environment variable overrides (all optional): `MODEL_NS`, `DSCI_NAME`,
+`RHOAI_MONITORING_NS`, `METRICS_STORAGE_SIZE` (5Gi), `METRICS_STORAGE_RETENTION` (90d),
+`OPERATOR_WAIT_TIMEOUT` (600s), `POD_WAIT_TIMEOUT` (300s), `METRICS_WAIT_TIMEOUT` (90s).
+
+All steps are idempotent — re-running on an already-configured cluster detects and skips each
+already-satisfied step. Also checks live whether the controller-created PodMonitor already
+injects the `llm_isvc_name` per-version label (true on RHOAI 3.5.1) before deciding whether to
+apply the doc's separate manual canary PodMonitor — avoids double-scraping the same pods.
+
+Tracing and alerting are intentionally **not** configured (`spec.monitoring.traces`/`alerting`
+on the DSCI are left untouched) — OpenTelemetry/Tempo are installed only because they're a
+hard precondition for the dashboards to reconcile at all, not to enable tracing itself.
 
 ## HardwareProfile and resources
 
