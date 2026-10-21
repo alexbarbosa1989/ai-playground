@@ -3,17 +3,24 @@
 # Removes all resources created by setup-llm-d.sh and deploy-example-workload.sh.
 #
 # Usage:
-#   ./teardown-llm-d.sh [--full] [--yes]
+#   ./teardown-llm-d.sh [--full] [--remove-observability] [--yes]
 #
 # Options:
-#   --full  Also uninstall cert-manager, LWS, RHCL/Kuadrant operators, the
-#           openshift-default GatewayClass, and MetalLB
-#   --yes   Skip the confirmation prompt
-#   --help  Show this message
+#   --full                    Also uninstall cert-manager, LWS, RHCL/Kuadrant operators, the
+#                              openshift-default GatewayClass, and MetalLB
+#   --remove-observability    Also undo setup-observability.sh: revert the DSCI's
+#                              monitoring.managementState to Removed, and uninstall the
+#                              Cluster Observability Operator, Red Hat build of OpenTelemetry,
+#                              and Tempo operators. NOT part of --full, and not on by default —
+#                              these are cluster-wide and may be relied on by other workloads
+#                              (MaaS dashboards, other model-serving projects, etc.) on a
+#                              shared cluster, same reasoning as kserve's managementState below.
+#   --yes                     Skip the confirmation prompt
+#   --help                    Show this message
 
 set -uo pipefail
 
-# ─── Configuration (must match setup-llm-d.sh) ────────────────────────────────
+# ─── Configuration (must match setup-llm-d.sh / setup-observability.sh) ───────
 RHOAI_OPERATOR_NS="${RHOAI_OPERATOR_NS:-redhat-ods-operator}"
 RHOAI_APP_NS="${RHOAI_APP_NS:-redhat-ods-applications}"
 CERT_MANAGER_NS="${CERT_MANAGER_NS:-cert-manager-operator}"
@@ -21,10 +28,15 @@ KUADRANT_NS="${KUADRANT_NS:-kuadrant-system}"
 LWS_NS="${LWS_NS:-openshift-lws-operator}"
 MODEL_NS="${MODEL_NS:-llm-d-models}"
 DSC_NAME="${DSC_NAME:-default-dsc}"
+DSCI_NAME="${DSCI_NAME:-default-dsci}"
+COO_NS="${COO_NS:-openshift-cluster-observability-operator}"
+OTEL_NS="${OTEL_NS:-openshift-opentelemetry-operator}"
+TEMPO_NS="${TEMPO_NS:-openshift-tempo-operator}"
 GATEWAY_NS="openshift-ingress"
 GATEWAY_NAME="openshift-ai-inference"
 
 FULL=false
+REMOVE_OBSERVABILITY=false
 YES=false
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -36,26 +48,33 @@ source "${SCRIPT_DIR}/lib/common.sh"
 parse_args() {
   for arg in "$@"; do
     case "$arg" in
-      --full) FULL=true ;;
-      --yes)  YES=true ;;
+      --full)                  FULL=true ;;
+      --remove-observability)  REMOVE_OBSERVABILITY=true ;;
+      --yes)                   YES=true ;;
       --help)
         cat <<'USAGE'
 teardown-llm-d.sh — Removes all resources created by setup-llm-d.sh and
 deploy-example-workload.sh.
 
 Usage:
-  ./teardown-llm-d.sh [--full] [--yes]
+  ./teardown-llm-d.sh [--full] [--remove-observability] [--yes]
 
 Options:
-  --full  Also uninstall cert-manager, LeaderWorkerSet, and RHCL/Kuadrant operators, the
-          openshift-default GatewayClass, and MetalLB (Subscriptions, CSVs, OperatorGroups,
-          namespaces)
-  --yes   Skip the confirmation prompt
-  --help  Show this message
+  --full                   Also uninstall cert-manager, LeaderWorkerSet, and RHCL/Kuadrant
+                            operators, the openshift-default GatewayClass, and MetalLB
+                            (Subscriptions, CSVs, OperatorGroups, namespaces)
+  --remove-observability   Also undo setup-observability.sh: revert the DSCI's
+                            monitoring.managementState to Removed, and uninstall the Cluster
+                            Observability Operator, Red Hat build of OpenTelemetry, and Tempo
+                            operators. Independent of --full — pass it explicitly even with
+                            --full if you want the observability stack gone too.
+  --yes                    Skip the confirmation prompt
+  --help                   Show this message
 
 Without --full the following are removed:
   - All LLMInferenceService resources in the model namespace
-  - Namespace llm-d-models
+  - Namespace llm-d-models (this also removes any PodMonitor/ServiceMonitor living in it,
+    including the Ch 6.3 canary PodMonitor setup-observability.sh may have applied)
   - kserve managementState left as-is (NOT reverted — likely shared with other, non-llm-d
     model-serving workloads on this cluster; revert manually if you're sure nothing else
     depends on it: oc patch dsc <name> --type=merge -p
@@ -72,8 +91,17 @@ Only with --full:
   - MetalLB (IPAddressPool/L2Advertisement, MetalLB CR, operator) — harmless no-op on cloud
     platforms, where it was never installed
 
-Not removed in either mode:
-  - RHOAI operator and DataScienceCluster (pre-existing)
+Only with --remove-observability:
+  - DSCI monitoring.managementState reverted to Removed (User Workload Monitoring itself is
+    left ON — too broadly relied upon cluster-wide to safely auto-disable; see
+    setup-observability.sh's own comments)
+  - Cluster Observability Operator, Red Hat build of OpenTelemetry, and Tempo operators
+    uninstalled
+
+Not removed in any mode:
+  - RHOAI operator and DataScienceCluster/DSCInitialization (pre-existing)
+  - User Workload Monitoring enablement (cluster-monitoring-config ConfigMap) — too broadly
+    shared to auto-revert; disable manually if you're sure nothing else on the cluster needs it
   - kuadrant-system / openshift-lws-operator namespaces' shared operands if other workloads
     on this cluster still reference them (see per-step warnings above)
 USAGE
@@ -92,6 +120,9 @@ confirm() {
   echo -e "  User    : $(oc whoami 2>/dev/null || echo '<unknown>')"
   if [[ "$FULL" == "true" ]]; then
     echo -e "  ${RED}--full: cert-manager, LWS, RHCL, GatewayClass, and MetalLB will also be uninstalled.${NC}"
+  fi
+  if [[ "$REMOVE_OBSERVABILITY" == "true" ]]; then
+    echo -e "  ${RED}--remove-observability: DSCI monitoring reverted; COO/OpenTelemetry/Tempo uninstalled.${NC}"
   fi
   echo
   read -rp "Type 'yes' to continue: " answer
@@ -189,6 +220,34 @@ delete_cert_manager() {
   log_ok "cert-manager operator removed."
 }
 
+delete_observability() {
+  log_step "Reverting DSCI monitoring and removing COO/OpenTelemetry/Tempo operators"
+
+  if oc get dscinitialization "$DSCI_NAME" &>/dev/null; then
+    oc patch dscinitialization "$DSCI_NAME" --type=merge \
+      -p '{"spec":{"monitoring":{"managementState":"Removed"}}}' 2>/dev/null \
+      || log_warn "Could not patch DSCI '${DSCI_NAME}' — check manually."
+    log_ok "DSCI '${DSCI_NAME}' monitoring.managementState reverted to Removed."
+  else
+    log_warn "DSCI '${DSCI_NAME}' not found — skipping."
+  fi
+
+  # CSV display names don't always match the Subscription package name (confirmed live:
+  # package "opentelemetry-product"/"tempo-product" install CSVs named
+  # "opentelemetry-operator.vX"/"tempo-operator.vX") — match on CSV name, not package name.
+  local ns csv_pattern
+  for entry in "${COO_NS}:cluster-observability-operator" "${OTEL_NS}:opentelemetry-operator" "${TEMPO_NS}:tempo-operator"; do
+    ns="${entry%%:*}"
+    csv_pattern="${entry##*:}"
+    local csv
+    csv=$(oc get csv -n "$ns" 2>/dev/null | awk -v p="$csv_pattern" '$1 ~ p {print $1}' | head -1)
+    [[ -n "$csv" ]] && oc delete csv "$csv" -n "$ns" --ignore-not-found 2>/dev/null || true
+    oc get subscription -n "$ns" -o name 2>/dev/null | xargs -r -n1 oc delete -n "$ns" --ignore-not-found 2>/dev/null || true
+    oc delete namespace "$ns" --ignore-not-found 2>/dev/null || true
+  done
+  log_ok "COO, OpenTelemetry, and Tempo operators removed."
+}
+
 # ─── Main ─────────────────────────────────────────────────────────────────────
 main() {
   parse_args "$@"
@@ -212,6 +271,10 @@ main() {
     delete_metallb
   fi
 
+  if [[ "$REMOVE_OBSERVABILITY" == "true" ]]; then
+    delete_observability
+  fi
+
   echo
   echo -e "${BOLD}${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"
   echo -e "${BOLD}${CYAN}║                    Teardown complete                          ║${NC}"
@@ -219,6 +282,10 @@ main() {
   echo
   if [[ "$FULL" != "true" ]]; then
     log_info "cert-manager, LWS, and RHCL operators were left in place (pass --full to remove them)."
+  fi
+  if [[ "$REMOVE_OBSERVABILITY" != "true" ]]; then
+    log_info "Observability stack (COO/OpenTelemetry/Tempo, DSCI monitoring) was left in place"
+    log_info "(pass --remove-observability to remove it)."
   fi
   log_warn "kserve managementState in the DataScienceCluster was NOT reverted — see --help for why."
 }
