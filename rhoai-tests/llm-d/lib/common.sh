@@ -196,6 +196,41 @@ detect_platform_class() {
   esac
 }
 
+# promql_query QUERY
+# Runs an instant PromQL query against the in-cluster Thanos querier, authenticated with
+# the current oc session's own bearer token (same mechanism `oc whoami -t` always provides —
+# no Secret/extra RBAC setup needed beyond being able to reach the thanos-querier Route).
+# Prints the raw JSON response on stdout.
+promql_query() {
+  local query="$1"
+  local route token
+  route=$(oc get route thanos-querier -n openshift-monitoring -o jsonpath='{.spec.host}' 2>/dev/null)
+  token=$(oc whoami -t 2>/dev/null)
+  if [[ -z "$route" || -z "$token" ]]; then
+    echo '{"status":"error","data":{"result":[]}}'
+    return 1
+  fi
+  curl -sk --data-urlencode "query=${query}" \
+    -H "Authorization: Bearer ${token}" \
+    "https://${route}/api/v1/query"
+}
+
+# promql_has_results QUERY
+# Returns success (0) if the query's result array is non-empty, failure (1) otherwise
+# (including on any transport/parse error) — used to smoke-test whether a metric is
+# actually being scraped, not just whether a PodMonitor/ServiceMonitor object exists.
+promql_has_results() {
+  local query="$1"
+  promql_query "$query" | python3 -c "
+import json, sys
+try:
+    d = json.load(sys.stdin)
+    sys.exit(0 if d.get('data', {}).get('result') else 1)
+except Exception:
+    sys.exit(1)
+" 2>/dev/null
+}
+
 # discover_olm_package SEARCH_REGEX [CATALOG_NAMESPACE]
 # Prints the first packagemanifest name matching SEARCH_REGEX (case-insensitive) in the
 # given catalog namespace (default openshift-marketplace), or nothing if none found.
