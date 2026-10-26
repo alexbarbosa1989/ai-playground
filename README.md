@@ -37,5 +37,8 @@
 - Create a custom vLLM custom runtime
 - Serving a model using the custom runtime and testing it
 
-
+### [Configuring MaaS in RHOAI 3.4+](https://github.com/alexbarbosa1989/maas-rhoai)
+- [Setup MaaS](https://github.com/alexbarbosa1989/maas-rhoai#quick-start)
+- [Configure MaaS Observability](https://github.com/alexbarbosa1989/maas-rhoai/tree/main/maas-observability)
+- [Teardown MaaS Configuration from cluster](https://github.com/alexbarbosa1989/maas-rhoai/blob/main/TEARDOWN-README.md)
 
