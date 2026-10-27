@@ -37,6 +37,11 @@
 - Create a custom vLLM custom runtime
 - Serving a model using the custom runtime and testing it
 
+### [llm-d on RHOAI 3.4+ — Distributed Inference Automation](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/llm-d)
+- [Setup llm-d in RHOAI and deploy a LLMInferenceService](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/llm-d)
+- [Configure Observability](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/llm-d)
+- [Deploy a model with custom image](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/llm-d)
+
 ### [Configuring MaaS in RHOAI 3.4+](https://github.com/alexbarbosa1989/maas-rhoai)
 - [Setup MaaS](https://github.com/alexbarbosa1989/maas-rhoai#quick-start)
 - [Configure MaaS Observability](https://github.com/alexbarbosa1989/maas-rhoai/tree/main/maas-observability)
