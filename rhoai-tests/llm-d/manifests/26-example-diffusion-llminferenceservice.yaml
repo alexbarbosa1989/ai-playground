@@ -30,8 +30,6 @@
 # Apply directly (no sed/templating needed, unlike the 19-example's .tmpl-free but
 # script-driven counterpart):
 #   oc apply -f manifests/example-diffusion-llminferenceservice.yaml
-# Edit opendatahub.io/hardware-profile-name and security.opendatahub.io/enable-auth below to
-# match your cluster first — see 19-example-llminferenceservice.yaml's own header for why.
 ---
 apiVersion: serving.kserve.io/v1alpha2
 kind: LLMInferenceService
@@ -39,7 +37,6 @@ metadata:
   name: qwen-image-2-1
   namespace: llm-d-models
   annotations:
-    opendatahub.io/hardware-profile-name: local-gpu   # replace with your GPU profile name
     opendatahub.io/hardware-profile-namespace: redhat-ods-applications
     opendatahub.io/model-type: generative
     security.opendatahub.io/enable-auth: "false"   # set "true" if setup-llm-d.sh configured RHCL/Kuadrant/Authorino
@@ -86,8 +83,6 @@ spec:
       - /var/run/kserve/tls/tls.key
       - --omni
       resources:
-        # CONFIRMED LIVE: Qwen-Image-2.1's weights use ~30.2 GiB VRAM — matches
-        # 21-example-gpu-hardwareprofile.yaml's "local-gpu" profile (1 GPU) exactly.
         requests:
           cpu: "2"
           memory: 12Gi
