@@ -78,6 +78,44 @@ Re-running the command above against an already-deployed service updates it in p
 (`llminferenceservice.serving.kserve.io/qwen3-8b configured`) rather than requiring a
 teardown/redeploy cycle.
 
+### Optional: deploy a Diffusers text-to-image model (e.g. Qwen-Image-2.1)
+
+```bash
+oc apply -f manifests/26-example-diffusion-llminferenceservice.yaml
+```
+
+Edit the `opendatahub.io/hardware-profile-name` and `security.opendatahub.io/enable-auth`
+annotations at the top of the file first to match your cluster — this manifest is applied
+directly with `oc apply`, not through `deploy-example-workload.sh`, so there's no sed/template
+substitution step to fill them in for you.
+
+This is a **separate manifest**, not a `deploy-example-workload.sh` flag combination, because
+a Diffusers-format model (one with `model_index.json` + `text_encoder`/`transformer`/`vae`
+subfolders, like `Qwen/Qwen-Image-2.1`, instead of a flat HF `config.json`) needs a
+fundamentally different container command, not just an extra vLLM argument:
+
+- It requires `vllm-omni` and the `--omni` flag — plain `vllm serve` only recognizes
+  `config.json`/`params.json` and rejects the model outright ("Invalid repository ID or local
+  directory specified").
+- KServe's own Preset unconditionally appends `--shutdown-timeout 40` to the generated
+  command for any vLLM ≥ 0.18.0, regardless of `--omni` — and vllm-omni's diffusion-stage
+  config validator doesn't recognize that field, crashing the pod before it starts
+  (`ValueError: Unknown diffusion config field(s) for stage 0: 'shutdown_timeout'`).
+  `deploy-example-workload.sh`'s `--vllm-arg` only *appends* to the args list; it can't remove
+  that Preset-injected flag, so `--vllm-arg --omni` alone would hit the same crash.
+
+The manifest works around this by overriding the container's `command`/`args` entirely,
+bypassing the Preset-generated script and reproducing everything it would otherwise provide
+(TLS cert paths, port, served-model-name, access-log suppression) except
+`--shutdown-timeout`. Confirmed live end-to-end on a CRC cluster (RHOAI 3.5.2): model weights
+loaded (~30 GiB on a single NVIDIA L40S), the vLLM API server started in pure-diffusion mode,
+and the `LLMInferenceService` reached `Ready=True` with every condition green. See the
+manifest's own header comment for the full root-cause writeup.
+
+Note the request payload for image generation differs from the chat-completions example in
+[Testing a deployed model](#testing-a-deployed-model) below — consult vllm-omni's own docs for
+the correct request shape for this model.
+
 ### Optional: configure observability
 
 ```bash

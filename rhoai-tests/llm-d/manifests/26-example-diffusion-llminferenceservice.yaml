@@ -1,0 +1,98 @@
+# Example LLMInferenceService (serving.kserve.io/v1alpha2) for a Diffusers text-to-image
+# model, as opposed to 19-example-llminferenceservice.yaml's standard causal-LM example.
+#
+# Separate file on purpose, NOT wired into deploy-example-workload.sh's --vllm-arg/--image
+# flags — CONFIRMED LIVE that this model class needs a fundamentally different container
+# command, not just an extra vLLM argument:
+#
+#   1. The model (Qwen/Qwen-Image-2.1) is a Diffusers pipeline (model_index.json +
+#      text_encoder/transformer/vae subfolders), not a flat HF transformers repo. Plain
+#      `vllm serve` only recognizes config.json/params.json and rejects it outright
+#      ("Invalid repository ID or local directory specified"). Serving it requires the
+#      `--omni` flag, which switches vllm-omni into its diffusion-aware entrypoint.
+#   2. KServe's own Preset (the `v3-5-2-kserve-config-llm-template` ConfigMap in
+#      redhat-ods-applications) generates the container's command/args itself, and
+#      unconditionally appends `--shutdown-timeout 40` for any vLLM >= 0.18.0 — regardless
+#      of --omni. vllm-omni's diffusion-stage config validator does not recognize that field
+#      and raises `ValueError: Unknown diffusion config field(s) for stage 0:
+#      'shutdown_timeout'`, crashing the pod before it ever starts serving.
+#
+#   deploy-example-workload.sh's --vllm-arg only APPENDS to the manifest's args: list (which
+#   becomes `$@` at the end of the Preset's generated command) — it cannot remove the
+#   Preset's own --shutdown-timeout. The only fix is overriding the container's command/args
+#   wholesale, bypassing the Preset-generated script entirely, which is what this manifest
+#   does explicitly below.
+#
+# CONFIRMED LIVE end-to-end on a CRC cluster (RHOAI 3.5.2): model weights loaded (30.2 GiB on
+# a single NVIDIA L40S, well within its 46GB VRAM), vLLM API server started in pure-diffusion
+# mode, LLMInferenceService reached Ready=True with every condition green.
+#
+# Apply directly (no sed/templating needed, unlike the 19-example's .tmpl-free but
+# script-driven counterpart):
+#   oc apply -f manifests/example-diffusion-llminferenceservice.yaml
+# Edit opendatahub.io/hardware-profile-name and security.opendatahub.io/enable-auth below to
+# match your cluster first — see 19-example-llminferenceservice.yaml's own header for why.
+---
+apiVersion: serving.kserve.io/v1alpha2
+kind: LLMInferenceService
+metadata:
+  name: qwen-image-2-1
+  namespace: llm-d-models
+  annotations:
+    opendatahub.io/hardware-profile-name: local-gpu   # replace with your GPU profile name
+    opendatahub.io/hardware-profile-namespace: redhat-ods-applications
+    opendatahub.io/model-type: generative
+    security.opendatahub.io/enable-auth: "false"   # set "true" if setup-llm-d.sh configured RHCL/Kuadrant/Authorino
+  labels:
+    opendatahub.io/dashboard: "true"
+    opendatahub.io/genai-asset: "true"
+spec:
+  model:
+    name: Qwen-Image-2.1
+    uri: hf://Qwen/Qwen-Image-2.1
+  replicas: 1
+  router:
+    gateway:
+      refs:
+      - name: openshift-ai-inference
+        namespace: openshift-ingress
+    route: {}
+    scheduler: {}
+  template:
+    containers:
+    - name: main
+      image: docker.io/vllm/vllm-omni:v0.32.0
+      # Bypasses the Preset-generated entrypoint script entirely — see header comment above
+      # for why (the Preset's auto-injected --shutdown-timeout crashes vllm-omni's diffusion
+      # validator). Everything the Preset would otherwise provide (TLS cert paths, port,
+      # served-model-name, access-log suppression) is reproduced explicitly below; only
+      # --shutdown-timeout is dropped, and --omni is added.
+      command:
+      - vllm
+      args:
+      - serve
+      - /mnt/models
+      - --served-model-name
+      - Qwen-Image-2.1
+      - publishers/llm-d-models/models/Qwen-Image-2.1
+      - --port
+      - "8000"
+      - --disable-access-log-for-endpoints
+      - /health,/metrics,/ping
+      - --enable-ssl-refresh
+      - --ssl-certfile
+      - /var/run/kserve/tls/tls.crt
+      - --ssl-keyfile
+      - /var/run/kserve/tls/tls.key
+      - --omni
+      resources:
+        # CONFIRMED LIVE: Qwen-Image-2.1's weights use ~30.2 GiB VRAM — matches
+        # 21-example-gpu-hardwareprofile.yaml's "local-gpu" profile (1 GPU) exactly.
+        requests:
+          cpu: "2"
+          memory: 12Gi
+          nvidia.com/gpu: "1"
+        limits:
+          cpu: "4"
+          memory: 16Gi
+          nvidia.com/gpu: "1"
