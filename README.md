@@ -48,4 +48,4 @@
 - [Setup MaaS](https://github.com/alexbarbosa1989/maas-rhoai#quick-start)
 - [Configure MaaS Observability](https://github.com/alexbarbosa1989/maas-rhoai/tree/main/maas-observability)
 - [Teardown MaaS Configuration from cluster](https://github.com/alexbarbosa1989/maas-rhoai/blob/main/TEARDOWN-README.md)
-
+- [Serving text-to-image model example - qwen-image-2.1](https://github.com/alexbarbosa1989/ai-playground/tree/main/rhoai-tests/llm-d#optional-deploy-a-diffusers-text-to-image-model-eg-qwen-image-21)
